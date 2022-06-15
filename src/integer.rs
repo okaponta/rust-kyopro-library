@@ -1,5 +1,10 @@
 use num_integer::Roots;
 
+// 切り上げ
+fn div_ceil(a: i32, b: i32) -> i32 {
+    (a + b - 1) / b
+}
+
 // 1+2+...+n
 fn tousa_sum_one(n: i64) -> i64 {
     n * (n + 1) / 2

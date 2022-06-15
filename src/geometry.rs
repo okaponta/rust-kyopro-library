@@ -100,3 +100,14 @@ fn closest_pair(points: &Vec<(i64, i64)>, i: usize, n: usize) -> (i64, Vec<(i64,
     }
     (d, qs)
 }
+
+// 凸多角形の面積の2倍を求める
+// 三角形に分割して計算を行う
+fn convex_area(xy: Vec<(i64, i64)>) -> i64 {
+    let mut res = 0;
+    let n = xy.len();
+    for i in 2..n {
+        res += outer_product_p(xy[0], xy[i - 1], xy[i]).abs();
+    }
+    res
+}
