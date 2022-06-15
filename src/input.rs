@@ -1,20 +1,20 @@
 use std::io::stdin;
 
-fn input_for_graph() {
+fn input_for_graph(n: usize) {
     let uv = vec![(0, 1)];
-    let mut edges = vec![];
+    let mut edges = vec![vec![]; n];
     for (u, v) in uv {
-        edges.push((u, v));
-        edges.push((v, u));
+        edges[u].push(v);
+        edges[v].push(u);
     }
 }
 
-fn input_for_graph_cost() {
+fn input_for_graph_cost(n: usize) {
     let uvw = vec![(0, 1, 2)];
-    let mut edges = vec![];
+    let mut edges = vec![vec![]; n];
     for (u, v, w) in uvw {
-        edges.push((u, v, w));
-        edges.push((v, u, w));
+        edges[u].push((v, w));
+        edges[v].push((u, w));
     }
 }
 

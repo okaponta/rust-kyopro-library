@@ -1,6 +1,7 @@
 use std::{
     cmp::Reverse,
     collections::{BTreeSet, BinaryHeap, HashSet},
+    mem::swap,
 };
 
 use itertools::{iproduct, Itertools};
@@ -58,6 +59,16 @@ impl Dijkstra {
         }
         res.reverse();
         res
+    }
+}
+
+fn dfs(prev: usize, cur: usize, edges: &Vec<Vec<usize>>, d: &mut Vec<usize>) {
+    for &next in &edges[cur] {
+        if next == prev {
+            continue;
+        }
+        d[next] = d[cur] + 1;
+        dfs(cur, next, edges, d);
     }
 }
 
@@ -286,6 +297,84 @@ fn prim_forest(n: usize, edges: Vec<Vec<(usize, i64)>>) -> i64 {
     res
 }
 
+// LCA (Lowest Common Ancestor)
+struct LCA {
+    n: usize,
+    k: usize,
+    parent: Vec<Vec<usize>>,
+    dist: Vec<usize>,
+}
+
+impl LCA {
+    fn new(n: usize) -> Self {
+        const INF: usize = 1 << 60;
+        let mut k = 1;
+        while 1 << k < n {
+            k += 1;
+        }
+        let parent = vec![vec![INF; n]; k];
+        let dist = vec![INF; n];
+        Self { n, k, parent, dist }
+    }
+
+    fn init(&mut self, edges: Vec<Vec<usize>>, init: usize) {
+        const INF: usize = 1 << 60;
+        self.dfs(init, init, &edges);
+        for i in 0..self.k - 1 {
+            for j in 0..self.n {
+                if self.parent[i][j] == INF {
+                    self.parent[i + 1][j] = INF;
+                } else {
+                    self.parent[i + 1][j] = self.parent[i][self.parent[i][j]];
+                }
+            }
+        }
+    }
+
+    // uとvのLCAを求める
+    fn query(&self, mut u: usize, mut v: usize) -> usize {
+        if self.dist[u] < self.dist[v] {
+            swap(&mut u, &mut v);
+        }
+        for i in 0..self.k {
+            if (self.dist[u] - self.dist[v]) >> i & 1 == 1 {
+                u = self.parent[i][u];
+            }
+        }
+        if u == v {
+            return u;
+        }
+        for i in (0..self.k).rev() {
+            if self.parent[i][u] != self.parent[i][v] {
+                u = self.parent[i][u];
+                v = self.parent[i][v];
+            }
+        }
+        return self.parent[0][u];
+    }
+
+    // 2点間の距離
+    fn get_dist(&self, u: usize, v: usize) -> usize {
+        self.dist[u] + self.dist[v] - 2 * self.dist[self.query(u, v)]
+    }
+
+    // 2点間のパス上に点pが存在するか判定
+    fn is_on_path(&self, u: usize, v: usize, p: usize) -> bool {
+        self.get_dist(u, p) + self.get_dist(p, v) == self.get_dist(u, v)
+    }
+
+    fn dfs(&mut self, prev: usize, cur: usize, edges: &Vec<Vec<usize>>) {
+        for &next in &edges[cur] {
+            if next == prev {
+                continue;
+            }
+            self.dist[next] = self.dist[cur] + 1;
+            self.parent[0][next] = cur;
+            self.dfs(cur, next, edges);
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -427,5 +516,29 @@ mod tests {
             edges[5 + b].push((a, -c));
         }
         assert_eq!(10000 * n as i64 + prim_forest(n, edges), 71071);
+    }
+
+    #[test]
+    fn test_lca() {
+        let n = 8;
+        let uv = vec![(0, 1), (0, 2), (1, 7), (2, 3), (2, 6), (3, 4), (3, 5)];
+        let mut edges = vec![vec![]; n];
+        for (u, v) in uv {
+            edges[u].push(v);
+            edges[v].push(u);
+        }
+        let mut lca = LCA::new(n);
+        lca.init(edges, 0);
+        assert_eq!(lca.query(1, 6), 0);
+        assert_eq!(lca.query(4, 6), 2);
+        assert_eq!(lca.query(4, 5), 3);
+
+        assert_eq!(lca.get_dist(7, 2), 3);
+        assert_eq!(lca.get_dist(1, 6), 3);
+        assert_eq!(lca.get_dist(3, 4), 1);
+
+        assert_eq!(lca.is_on_path(1, 3, 6), false);
+        assert_eq!(lca.is_on_path(2, 4, 3), true);
+        assert_eq!(lca.is_on_path(7, 5, 2), true);
     }
 }
