@@ -7,6 +7,12 @@ fn input_for_graph(n: usize) {
         edges[u].push(v);
         edges[v].push(u);
     }
+    let ab = vec![(0, 1)];
+    let mut edges = vec![vec![]; n];
+    for (a, b) in ab {
+        edges[a].push(b);
+        edges[b].push(a);
+    }
 }
 
 fn input_for_graph_cost(n: usize) {
