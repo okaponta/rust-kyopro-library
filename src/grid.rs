@@ -1,4 +1,17 @@
-use std::collections::VecDeque;
+use std::collections::{HashMap, HashSet, VecDeque};
+
+use itertools::Itertools;
+
+// 座標圧縮
+// Mapを返却する。戻り値のmap[元の値]が圧縮された値になる
+fn compress(source: &[usize]) -> HashMap<usize, usize> {
+    let set: HashSet<&usize> = source.iter().collect();
+    let mut result: HashMap<usize, usize> = HashMap::new();
+    for (i, x) in set.into_iter().sorted().enumerate() {
+        result.insert(*x, i);
+    }
+    result
+}
 
 // 連結であるかをチェックする
 // c..チェック対象の数字
@@ -66,6 +79,41 @@ fn has_no_hole(b: &Vec<Vec<usize>>, c: usize, n: usize) -> bool {
     }
 
     (0..n).all(|i| (0..n).all(|j| b[i][j] != c || visited[i][j]))
+}
+
+// targetの領域の数をかぞえる
+fn count_area(grid: &mut Vec<Vec<bool>>, w: usize, h: usize, target: bool) -> usize {
+    let dx = vec![-1, 0, 1, 0];
+    let dy = vec![0, -1, 0, 1];
+    let mut ans = 0;
+    for y in 0..w {
+        for x in 0..h {
+            if grid[y][x] != target {
+                // 対象外
+                continue;
+            }
+            ans += 1;
+            let mut q = VecDeque::new();
+            q.push_back((x, y));
+            while let Some((sx, sy)) = q.pop_front() {
+                for i in 0..4 {
+                    let tx = sx as i64 + dx[i];
+                    let ty = sy as i64 + dy[i];
+                    if tx < 0 || w as i64 <= tx || ty < 0 || w as i64 <= ty {
+                        continue;
+                    }
+                    let tx = tx as usize;
+                    let ty = ty as usize;
+                    if grid[ty][tx] != target {
+                        continue;
+                    }
+                    q.push_back((tx, ty));
+                    grid[ty][tx] = !target;
+                }
+            }
+        }
+    }
+    ans
 }
 
 #[cfg(test)]
