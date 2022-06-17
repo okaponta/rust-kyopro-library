@@ -65,6 +65,7 @@ fn divisor(n: i64) -> Vec<i64> {
 // 最大公約数
 // ユークリッドの互除法
 // 計算量はO(log min(a,b))
+// 0を引数にいれるとgcdの計算を飛ばして返却される
 fn gcd(a: i64, b: i64) -> i64 {
     match b {
         0 => a,
