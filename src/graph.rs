@@ -1,14 +1,5 @@
-use std::{
-    cmp::Reverse,
-    collections::{BTreeSet, BinaryHeap, HashSet},
-    mem::swap,
-};
-
-use itertools::{iproduct, Itertools};
-use petgraph::unionfind::UnionFind;
-
 // 計算量は(E+V)logV
-struct Dijkstra {
+pub struct Dijkstra {
     distance: Vec<usize>,
     parent: Vec<usize>,
 }
@@ -21,14 +12,14 @@ impl Dijkstra {
         const INF: usize = 1 << 60;
         let mut distance = vec![INF; n];
         let mut parent = vec![INF; n];
-        let mut heap = BinaryHeap::new();
+        let mut heap = std::collections::BinaryHeap::new();
         for i in 0..n {
             if i == init {
-                heap.push((Reverse(0), i));
+                heap.push((std::cmp::Reverse(0), i));
             }
-            heap.push((Reverse(INF), i));
+            heap.push((std::cmp::Reverse(INF), i));
         }
-        while let Some((Reverse(d), target)) = heap.pop() {
+        while let Some((std::cmp::Reverse(d), target)) = heap.pop() {
             if distance[target] < d {
                 continue;
             }
@@ -36,7 +27,7 @@ impl Dijkstra {
             for &(next, cost) in &edge[target] {
                 if distance[next] > d + cost {
                     distance[next] = d + cost;
-                    heap.push((Reverse(distance[next]), next));
+                    heap.push((std::cmp::Reverse(distance[next]), next));
                     parent[next] = target;
                 }
             }
@@ -62,6 +53,7 @@ impl Dijkstra {
     }
 }
 
+// 距離が1のときにはdfsでじゅうぶん。
 fn dfs(prev: usize, cur: usize, edges: &Vec<Vec<usize>>, d: &mut Vec<usize>) {
     for &next in &edges[cur] {
         if next == prev {
@@ -73,7 +65,7 @@ fn dfs(prev: usize, cur: usize, edges: &Vec<Vec<usize>>, d: &mut Vec<usize>) {
 }
 
 // 計算量はE×V
-struct BellmanFord {
+pub struct BellmanFord {
     distance: Vec<i64>,
     has_neg_loop: bool,
 }
@@ -114,7 +106,7 @@ impl BellmanFord {
 
 // 計算量はN^3
 // 負の場合でも使用でき、任意の点の最短距離がすべて求まる
-struct WarshallFloyd {
+pub struct WarshallFloyd {
     distance: Vec<Vec<i64>>,
 }
 
@@ -129,8 +121,12 @@ impl WarshallFloyd {
             distance[b][a] = c;
         }
 
-        for (i, j, k) in iproduct!(0..n, 0..n, 0..n) {
-            distance[i][j] = distance[i][j].min(distance[i][k] + distance[k][j]);
+        for i in 0..n {
+            for j in 0..n {
+                for k in 0..n {
+                    distance[i][j] = distance[i][j].min(distance[i][k] + distance[k][j]);
+                }
+            }
         }
         Self { distance }
     }
@@ -141,7 +137,7 @@ impl WarshallFloyd {
 // sizes 強連結成分をまとめたときのサイズ
 // new_num もとの頂点->まとめたあとの頂点のマッピング
 // new_edges まとめたあとの辺(トポロジカルソート済)
-struct SCC {
+pub struct SCC {
     n: usize,
     sizes: Vec<usize>,
     new_num: Vec<usize>,
@@ -184,7 +180,7 @@ impl SCC {
                 count += 1;
             }
         }
-        let mut new_edges = vec![BTreeSet::new(); self.sizes.len()];
+        let mut new_edges = vec![std::collections::BTreeSet::new(); self.sizes.len()];
         for i in 0..n {
             for &edge in &edges[i] {
                 if self.new_num[i] != self.new_num[edge] {
@@ -194,8 +190,8 @@ impl SCC {
         }
         self.new_edges = new_edges
             .iter()
-            .map(|s| s.iter().map(|i| *i).collect_vec())
-            .collect_vec();
+            .map(|s| s.iter().map(|i| *i).collect::<Vec<_>>())
+            .collect::<Vec<_>>();
         //return (sizes, new_num, v);
     }
 
@@ -242,7 +238,7 @@ impl SCC {
 // edges: Vec<(usize,usize,i64)> edges[i] = [(0,2,3), (1,3,-1), (From,To,重み)]
 fn kruskal(n: usize, mut edges: Vec<(usize, usize, i64)>) -> i64 {
     edges.sort_by_key(|e| e.2);
-    let mut uf = UnionFind::new(n);
+    let mut uf = petgraph::unionfind::UnionFind::new(n);
     let mut res = 0;
     for (u, v, cost) in edges {
         if uf.union(u, v) {
@@ -259,16 +255,16 @@ fn kruskal(n: usize, mut edges: Vec<(usize, usize, i64)>) -> i64 {
 fn prim(n: usize, edges: Vec<Vec<(usize, i64)>>) -> i64 {
     let mut res = 0;
     let mut used = vec![false; n];
-    let mut heap = BinaryHeap::new();
-    heap.push((Reverse(0), 0));
-    while let Some((Reverse(d), target)) = heap.pop() {
+    let mut heap = std::collections::BinaryHeap::new();
+    heap.push((std::cmp::Reverse(0), 0));
+    while let Some((std::cmp::Reverse(d), target)) = heap.pop() {
         if used[target] {
             continue;
         }
         used[target] = true;
         res += d;
         for &(next, cost) in &edges[target] {
-            heap.push((Reverse(cost), next));
+            heap.push((std::cmp::Reverse(cost), next));
         }
     }
     res
@@ -280,17 +276,17 @@ fn prim(n: usize, edges: Vec<Vec<(usize, i64)>>) -> i64 {
 // edges: Vec<Vec<(usize,i64)>> edges[i] = [(2,3), (3,1), (頂点への道,重み)]
 fn prim_forest(n: usize, edges: Vec<Vec<(usize, i64)>>) -> i64 {
     let mut res = 0;
-    let mut remain: HashSet<usize> = (0..n).collect();
-    let mut heap = BinaryHeap::new();
+    let mut remain: std::collections::HashSet<usize> = (0..n).collect();
+    let mut heap = std::collections::BinaryHeap::new();
     while !remain.is_empty() {
-        heap.push((Reverse(0), *remain.iter().next().unwrap()));
-        while let Some((Reverse(d), target)) = heap.pop() {
+        heap.push((std::cmp::Reverse(0), *remain.iter().next().unwrap()));
+        while let Some((std::cmp::Reverse(d), target)) = heap.pop() {
             if !remain.remove(&target) {
                 continue;
             }
             res += d;
             for &(next, cost) in &edges[target] {
-                heap.push((Reverse(cost), next));
+                heap.push((std::cmp::Reverse(cost), next));
             }
         }
     }
@@ -298,7 +294,8 @@ fn prim_forest(n: usize, edges: Vec<Vec<(usize, i64)>>) -> i64 {
 }
 
 // LCA (Lowest Common Ancestor)
-struct LCA {
+// 実装スキル不足でnewしたあとにinitをしなきゃいけない構造になってしまった・・・
+pub struct LCA {
     n: usize,
     k: usize,
     parent: Vec<Vec<usize>>,
@@ -306,7 +303,7 @@ struct LCA {
 }
 
 impl LCA {
-    fn new(n: usize) -> Self {
+    pub fn new(n: usize) -> Self {
         const INF: usize = 1 << 60;
         let mut k = 1;
         while 1 << k < n {
@@ -317,7 +314,7 @@ impl LCA {
         Self { n, k, parent, dist }
     }
 
-    fn init(&mut self, edges: Vec<Vec<usize>>, init: usize) {
+    pub fn init(&mut self, edges: Vec<Vec<usize>>, init: usize) {
         const INF: usize = 1 << 60;
         self.dfs(init, init, &edges);
         for i in 0..self.k - 1 {
@@ -332,9 +329,9 @@ impl LCA {
     }
 
     // uとvのLCAを求める
-    fn query(&self, mut u: usize, mut v: usize) -> usize {
+    pub fn query(&self, mut u: usize, mut v: usize) -> usize {
         if self.dist[u] < self.dist[v] {
-            swap(&mut u, &mut v);
+            std::mem::swap(&mut u, &mut v);
         }
         for i in 0..self.k {
             if (self.dist[u] - self.dist[v]) >> i & 1 == 1 {
@@ -354,12 +351,12 @@ impl LCA {
     }
 
     // 2点間の距離
-    fn get_dist(&self, u: usize, v: usize) -> usize {
+    pub fn get_dist(&self, u: usize, v: usize) -> usize {
         self.dist[u] + self.dist[v] - 2 * self.dist[self.query(u, v)]
     }
 
     // 2点間のパス上に点pが存在するか判定
-    fn is_on_path(&self, u: usize, v: usize, p: usize) -> bool {
+    pub fn is_on_path(&self, u: usize, v: usize, p: usize) -> bool {
         self.get_dist(u, p) + self.get_dist(p, v) == self.get_dist(u, v)
     }
 

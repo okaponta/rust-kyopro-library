@@ -1,8 +1,3 @@
-use std::{
-    cmp::Reverse,
-    collections::{BinaryHeap, VecDeque},
-};
-
 struct FordFulkerson {
     n: usize,
     edge: Vec<Vec<(usize, i64, usize)>>,
@@ -105,7 +100,7 @@ impl Dinic {
 
     pub fn bfs(&mut self) {
         self.level = vec![-1; self.n];
-        let mut q = VecDeque::new();
+        let mut q = std::collections::VecDeque::new();
         self.level[0] = 0;
         q.push_back(0);
         while let Some(v) = q.pop_front() {
@@ -182,12 +177,12 @@ impl MinCostFlow {
 
     pub fn min_cost_flow(&mut self, s: usize, t: usize, mut f: i64) -> i64 {
         let mut res = 0;
-        let mut heap = BinaryHeap::new();
+        let mut heap = std::collections::BinaryHeap::new();
         while f > 0 {
             self.dist = vec![1 << 60; self.n];
             self.dist[s] = 0;
-            heap.push((Reverse(0), s));
-            while let Some((Reverse(d), v)) = heap.pop() {
+            heap.push((std::cmp::Reverse(0), s));
+            while let Some((std::cmp::Reverse(d), v)) = heap.pop() {
                 if self.dist[v] < d {
                     continue;
                 }
@@ -197,7 +192,7 @@ impl MinCostFlow {
                         self.dist[to] = self.dist[v] + cost + self.h[v] - self.h[to];
                         self.prevv[to] = v;
                         self.preve[to] = i;
-                        heap.push((Reverse(self.dist[to]), to));
+                        heap.push((std::cmp::Reverse(self.dist[to]), to));
                     }
                 }
             }

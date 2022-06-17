@@ -1,5 +1,3 @@
-use std::io::stdin;
-
 fn input_for_graph(n: usize) {
     let uv = vec![(0, 1)];
     let mut edges = vec![vec![]; n];
@@ -36,6 +34,6 @@ fn input_string_as_int() {
 // let n: usize = read().parse().unwrap();
 fn read() -> String {
     let mut buf = String::new();
-    stdin().read_line(&mut buf).ok();
+    std::io::stdin().read_line(&mut buf).ok();
     buf.split_whitespace().next().unwrap().to_string()
 }
