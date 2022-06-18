@@ -1,4 +1,8 @@
-// segment tree。
+// segment tree
+// seg[0] -> seg[1]+seg[2]
+// seg[1] -> seg[3]+seg[4] seg[2] -> seg[5]+seg[6]
+// seg[3] -> seg[7]+seg[8] seg[6] -> seg[13]+seg[14]]
+// 必要な要素数は2^n-1
 // 区間上の値を更新する
 // 任意の区間上の最小値や合計値(与えるfuncによって全てのbit or値)などを取得する
 pub struct SegmentTree<T, F> {
@@ -37,7 +41,7 @@ where
 
     pub fn update_all(&mut self) {
         for i in (0..self.n - 1).rev() {
-            self.seg[i] = (self.f)(self.seg[2 * i], self.seg[2 * i + 1]);
+            self.seg[i] = (self.f)(self.seg[2 * i + 1], self.seg[2 * i + 2]);
         }
     }
 
@@ -113,21 +117,26 @@ mod tests {
     #[test]
     fn test_segment() {
         let mut seg = SegmentTree::new(9, 0, |a, b| a + b);
+        println!("{:?}", seg.seg);
         seg.update(1, 1);
+        println!("{:?}", seg.seg);
         assert_eq!(seg.query(0..1), 0);
         assert_eq!(seg.query(0..2), 1);
 
         seg.update(5, 2);
+        println!("{:?}", seg.seg);
         assert_eq!(seg.query(0..5), 1);
         assert_eq!(seg.query(0..6), 3);
         assert_eq!(seg.query(5..6), 2);
 
         seg.update(9, 1);
+        println!("{:?}", seg.seg);
         assert_eq!(seg.query(0..9), 3);
         assert_eq!(seg.query(0..10), 4);
         assert_eq!(seg.query(9..10), 1);
 
         seg.update(2, -3);
+        println!("{:?}", seg.seg);
         assert_eq!(seg.query(0..2), 1);
         assert_eq!(seg.query(0..3), -2);
         assert_eq!(seg.query(0..10), 1);
