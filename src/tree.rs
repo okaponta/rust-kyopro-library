@@ -164,4 +164,18 @@ mod tests {
         assert_eq!(fw.sum(2), -2);
         assert_eq!(fw.sum(9), 1);
     }
+
+    #[test]
+    fn test_inversion_num() {
+        let n = 9;
+        let mut inv = 0;
+        let mut fw = FenwickTree::new(n);
+        // 注意：1-indexedで行うこと！
+        let a = vec![3, 1, 5, 4, 2, 9, 6, 8, 7];
+        for i in 0..n {
+            inv += i as i64 - fw.sum(a[i]);
+            fw.add(a[i], 1);
+        }
+        assert_eq!(inv, 9);
+    }
 }

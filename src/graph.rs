@@ -6,9 +6,9 @@ pub struct Dijkstra {
 
 impl Dijkstra {
     // n:usize 頂点の数
-    // edge: Vec<Vec<(usize,usize)>> edge[i] = [(2,3), (3,1), (頂点への道,重み)]
+    // edges: Vec<Vec<(usize,usize)>> edge[i] = [(2,3), (3,1), (頂点への道,重み)]
     // init:usize どの頂点を起点に考えるか
-    pub fn new(n: usize, edge: Vec<Vec<(usize, usize)>>, init: usize) -> Self {
+    pub fn new(n: usize, edges: &Vec<Vec<(usize, usize)>>, init: usize) -> Self {
         const INF: usize = 1 << 60;
         let mut distance = vec![INF; n];
         let mut parent = vec![INF; n];
@@ -24,7 +24,7 @@ impl Dijkstra {
                 continue;
             }
             distance[target] = d;
-            for &(next, cost) in &edge[target] {
+            for &(next, cost) in &edges[target] {
                 if distance[next] > d + cost {
                     distance[next] = d + cost;
                     heap.push((std::cmp::Reverse(distance[next]), next));
@@ -393,7 +393,7 @@ mod tests {
             path[a].push((b, c));
             path[b].push((a, c));
         }
-        let d = Dijkstra::new(n, path, 0);
+        let d = Dijkstra::new(n, &path, 0);
 
         assert_eq!(d.distance, vec![0, 5, 7, 7, 2, 5]);
 
