@@ -112,19 +112,18 @@ pub struct WarshallFloyd {
 
 impl WarshallFloyd {
     // n:usize 頂点の数
-    // edges: Vec<(usize,usize,i64)> edges[i] = [(0,2,3), (1,3,-1), (From,To,重み)]
-    pub fn new(n: usize, edges: Vec<(usize, usize, i64)>) -> Self {
+    // edges: Vec<Vec<(usize,i64)>> edges[i] = [(2,3), (3,-1), (To,重み)]
+    pub fn new(n: usize, edges: &Vec<Vec<(usize, i64)>>) -> Self {
         let mut distance = vec![vec![1 << 60; n]; n];
-
-        for &(a, b, c) in &edges {
-            distance[a][b] = c;
-            distance[b][a] = c;
-        }
-
         for i in 0..n {
-            for j in 0..n {
-                for k in 0..n {
-                    distance[i][j] = distance[i][j].min(distance[i][k] + distance[k][j]);
+            for &(j, c) in &edges[i] {
+                distance[i][j] = c;
+            }
+        }
+        for k in 0..n {
+            for i in 0..n {
+                for j in 0..n {
+                    distance[i][j] = distance[i][j].min(distance[i][k].max(distance[k][j]));
                 }
             }
         }

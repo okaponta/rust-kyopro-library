@@ -31,7 +31,7 @@
   - 一部だけrotateしたいとき
     - ans[i..].rotate_right(1);
   - `s[n..].iter().collect::<String>(), s[..n].iter().collect::<String>())`
-- 3 つで sort(全部逆順)
+- 3 つで sort(全部正順)
 
 ```
 vec.sort_by(
