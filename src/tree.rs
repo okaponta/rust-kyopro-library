@@ -108,6 +108,13 @@ impl FenwickTree {
         }
         sum
     }
+
+    // ai+...+ajを計算する
+    fn range(&self, i: usize, j: usize) -> i64 {
+        assert!(i <= j);
+        assert!(j < self.len);
+        self.sum(j) - self.sum(i - 1)
+    }
 }
 
 #[cfg(test)]
