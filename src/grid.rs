@@ -13,6 +13,30 @@ fn compress(source: &[usize]) -> HashMap<usize, usize> {
     result
 }
 
+fn move_grid_4(n: usize, x: usize, y: usize) {
+    for (dx, dy) in vec![(!0, 0), (0, 1), (0, !0), (1, 0)] {
+        let xi = x.wrapping_add(dx);
+        let yi = y.wrapping_add(dy);
+        if n <= xi || n <= yi {
+            continue;
+        }
+        // ここは移動可能
+    }
+}
+
+fn move_grid_8(n: usize, x: usize, y: usize) {
+    let dx = vec![!0, !0, 0, 1, 1, 1, 0, !0];
+    let dy = vec![0, 1, 1, 1, 0, !0, !0, !0];
+    for i in 0..8 {
+        let xi = x.wrapping_add(dx[i]);
+        let yi = y.wrapping_add(dy[i]);
+        if n <= xi || n <= yi {
+            continue;
+        }
+        // ここは移動可能
+    }
+}
+
 // 連結であるかをチェックする
 // c..チェック対象の数字
 // n..盤面の大きさ
