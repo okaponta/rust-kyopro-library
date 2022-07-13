@@ -25,8 +25,8 @@ fn outer_product_p(p1: (i64, i64), p2: (i64, i64), p3: (i64, i64)) -> i64 {
 }
 
 // 距離の二乗を返却
-fn dist(p1: (i32, i32), p2: (i32, i32)) -> i32 {
-    (p1.0 - p2.0) * (p1.0 - p2.0) + (p1.1 - p2.1) * (p1.1 - p2.1)
+fn dist(x1: i64, y1: i64, x2: i64, y2: i64) -> i64 {
+    (x1 - x2).pow(2) + (y1 - y2).pow(2)
 }
 
 // 3点が同一線状にあるか判定
@@ -110,4 +110,24 @@ fn convex_area(xy: Vec<(i64, i64)>) -> i64 {
         res += outer_product_p(xy[0], xy[i - 1], xy[i]).abs();
     }
     res
+}
+
+// x,yを半時計まわりにd度回転させる
+fn rotate(x: f64, y: f64, d: f64) -> (f64, f64) {
+    let p = nalgebra::Vector2::new(x, y);
+    let rot = nalgebra::Rotation2::new(d * 2.0 * std::f64::consts::PI / 360.0);
+    let res = rot * p;
+    (res[0], res[1])
+}
+
+// 円周が重なるかどうかを返却する。接する場合もtrueを返却する
+fn is_cross_circumference(x1: i64, y1: i64, r1: i64, x2: i64, y2: i64, r2: i64) -> bool {
+    let d = dist(x1, y1, x2, y2);
+    if (r1 + r2).pow(2) < d {
+        return false;
+    }
+    if d < (r1 - r2).pow(2) {
+        return false;
+    }
+    true
 }

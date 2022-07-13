@@ -1,17 +1,4 @@
-use std::collections::{HashMap, HashSet, VecDeque};
-
-use itertools::Itertools;
-
-// 座標圧縮
-// Mapを返却する。戻り値のmap[元の値]が圧縮された値になる
-fn compress(source: &[usize]) -> HashMap<usize, usize> {
-    let set: HashSet<&usize> = source.iter().collect();
-    let mut result: HashMap<usize, usize> = HashMap::new();
-    for (i, x) in set.into_iter().sorted().enumerate() {
-        result.insert(*x, i);
-    }
-    result
-}
+use std::collections::VecDeque;
 
 fn move_grid_4(n: usize, x: usize, y: usize) {
     for (dx, dy) in vec![(!0, 0), (0, 1), (0, !0), (1, 0)] {

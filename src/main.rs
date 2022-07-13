@@ -6,6 +6,8 @@ mod bit;
 #[allow(dead_code)]
 mod combination;
 #[allow(dead_code)]
+mod convert;
+#[allow(dead_code)]
 mod doubling;
 #[allow(dead_code)]
 mod flow;
