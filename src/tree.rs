@@ -131,6 +131,74 @@ fn inversion_num(a: Vec<usize>) -> i64 {
     inv
 }
 
+struct LazySegmentTree {
+    n: usize,
+    node: Vec<i64>,
+    lazy: Vec<i64>,
+}
+
+impl LazySegmentTree {
+    fn new(size: usize) -> LazySegmentTree {
+        let n = size.next_power_of_two();
+        LazySegmentTree {
+            n: n,
+            node: vec![0i64; 2 * n],
+            lazy: vec![0i64; 2 * n],
+        }
+    }
+
+    // k番目のノードの遅延評価
+    fn eval(&mut self, k: usize, l: usize, r: usize) {
+        if self.lazy[k] != 0 {
+            self.node[k] += self.lazy[k];
+        }
+        if r - l > 1 {
+            // 最下段かどうかのチェック
+            self.lazy[2 * k + 1] += self.lazy[k] / 2;
+            self.lazy[2 * k + 2] += self.lazy[k] / 2;
+        }
+        self.lazy[k] = 0;
+    }
+
+    // [a,b)にxを加算する
+    fn add(&mut self, a: usize, b: usize, x: i64) {
+        self.add_range(a, b, x, 0, 0, self.n)
+    }
+
+    // [a,b)の合計値
+    fn sum(&mut self, a: usize, b: usize) -> i64 {
+        self.sum_range(a, b, 0, 0, self.n)
+    }
+
+    fn add_range(&mut self, a: usize, b: usize, x: i64, k: usize, l: usize, r: usize) {
+        self.eval(k, l, r);
+        if b <= l || r <= a {
+            return;
+        }
+        if a <= l && r <= b {
+            self.lazy[k] += (r - l) as i64 * x;
+            self.eval(k, l, r);
+        } else {
+            self.add_range(a, b, x, k * 2 + 1, l, (l + r) / 2);
+            self.add_range(a, b, x, k * 2 + 2, (l + r) / 2, r);
+            self.node[k] = self.node[2 * k + 1] + self.node[2 * k + 2];
+        }
+    }
+
+    fn sum_range(&mut self, a: usize, b: usize, k: usize, l: usize, r: usize) -> i64 {
+        if b <= l || r <= a {
+            return 0;
+        }
+        self.eval(k, l, r);
+        if a <= l && r <= b {
+            return self.node[k] as i64;
+        }
+        let left = self.sum_range(a, b, 2 * k + 1, l, (l + r) / 2);
+        let right = self.sum_range(a, b, 2 * k + 2, (l + r) / 2, r);
+        return left + right;
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -190,5 +258,28 @@ mod tests {
     fn test_inversion_num() {
         let a = vec![3, 1, 5, 4, 2, 9, 6, 8, 7];
         assert_eq!(inversion_num(a), 9);
+    }
+
+    #[test]
+    fn test_lazy_segment() {
+        let mut seg = LazySegmentTree::new(10);
+        let a = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        // 初期化
+        for i in 0..10 {
+            seg.add(i, i + 1, a[i]);
+        }
+        println!("{:?}", seg.node);
+        // 0-indexedで3なので、4が想定解
+        assert_eq!(seg.sum(3, 4), 4);
+        // 全部の和は55
+        assert_eq!(seg.sum(0, 10), 55);
+
+        // 2,3,4,5に3を足した
+        seg.add(2, 6, 3);
+        println!("{:?}", seg.node);
+        // 1,2,6,7,8,9,7,8,9,10
+        assert_eq!(seg.sum(2, 3), 6);
+        assert_eq!(seg.sum(1, 3), 8);
+        assert_eq!(seg.sum(5, 7), 16);
     }
 }
