@@ -120,6 +120,8 @@ fn rotate(x: f64, y: f64, d: f64) -> (f64, f64) {
     (res[0], res[1])
 }
 
+// アフィン変換(189eを見てね)
+
 // 円周が重なるかどうかを返却する。接する場合もtrueを返却する
 fn is_cross_circumference(x1: i64, y1: i64, r1: i64, x2: i64, y2: i64, r2: i64) -> bool {
     let d = dist(x1, y1, x2, y2);
