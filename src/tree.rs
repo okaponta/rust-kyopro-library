@@ -120,11 +120,11 @@ impl FenwickTree {
 // 転倒数を求める。
 // とりうる最大値の木作るので、制約が大きい場合は座標圧縮などしてから呼び出すこと
 fn inversion_num(a: Vec<usize>) -> i64 {
-    let n = *a.iter().max().unwrap();
+    let max = *a.iter().max().unwrap();
     let mut inv = 0;
-    let mut fw = FenwickTree::new(n);
+    let mut fw = FenwickTree::new(max);
     // 注意：1-indexedで行うこと！
-    for i in 0..n {
+    for i in 0..a.len() {
         inv += i as i64 - fw.sum(a[i]);
         fw.add(a[i], 1);
     }
