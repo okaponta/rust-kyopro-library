@@ -81,6 +81,7 @@ fn lcm(a: i64, b: i64) -> i64 {
 
 // 拡張ユークリッドの互除法
 // ax + by = gcd(a,b) の整数解を求める
+// mod bにおけるaの逆元がxになるよ
 // 参照を以下関数に渡す
 fn extend_euclid(a: i64, b: i64, x: &mut i64, y: &mut i64) -> i64 {
     if b == 0 {
