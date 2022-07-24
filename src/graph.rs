@@ -53,7 +53,7 @@ impl Dijkstra {
     }
 }
 
-// 距離が1のときにはdfsでじゅうぶん。
+// 距離が1のときにはdfsでじゅうぶん。(木なら使える)
 fn dfs(prev: usize, cur: usize, edges: &Vec<Vec<usize>>, d: &mut Vec<usize>) {
     for &next in &edges[cur] {
         if next == prev {
@@ -61,6 +61,39 @@ fn dfs(prev: usize, cur: usize, edges: &Vec<Vec<usize>>, d: &mut Vec<usize>) {
         }
         d[next] = d[cur] + 1;
         dfs(cur, next, edges, d);
+    }
+}
+
+// スタックオーバーフロー対策、ループがあるやつ対策
+fn bfs(init: usize, n: usize, edges: &Vec<Vec<usize>>) -> Vec<i64> {
+    let mut d = vec![-1; n];
+    let mut q = std::collections::VecDeque::new();
+    q.push_back((init, 0));
+    while let Some((cur, dist)) = q.pop_front() {
+        if d[cur] != -1 {
+            continue;
+        }
+        d[cur] = dist;
+        for &next in &edges[cur] {
+            if d[next] == -1 {
+                q.push_back((next, dist + 1));
+            }
+        }
+    }
+    d
+}
+
+fn topo(n: usize, mut g: Vec<Vec<usize>>) {
+    let mut parent = vec![n; n];
+    let mut topo = vec![0];
+    for i in 0..n {
+        let v = topo[i];
+        for u in g[v].clone() {
+            parent[u] = v;
+            let x = g[u].iter().position(|p| *p == v).unwrap();
+            g[u].remove(x);
+            topo.push(u);
+        }
     }
 }
 
