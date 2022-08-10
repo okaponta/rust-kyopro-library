@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 // segment tree
 // seg[0] -> seg[1]+seg[2]
 // seg[1] -> seg[3]+seg[4] seg[2] -> seg[5]+seg[6]
@@ -196,6 +198,66 @@ impl LazySegmentTree {
         let left = self.sum_range(a, b, 2 * k + 1, l, (l + r) / 2);
         let right = self.sum_range(a, b, 2 * k + 2, (l + r) / 2, r);
         return left + right;
+    }
+}
+
+// https://atcoder.jp/contests/abc183/submissions/19374177
+// ↑から拝借。。小さい方の要素を結合したいときに使おう。あとで書き直す。
+#[derive(Clone)]
+pub struct UnionFind {
+    par: Vec<usize>,
+    size: Vec<usize>,
+    ds: Vec<HashMap<usize, u32>>,
+    count: usize,
+}
+
+impl UnionFind {
+    pub fn new(len: usize, ds: Vec<HashMap<usize, u32>>) -> Self {
+        let par: Vec<_> = (0..len).collect();
+        let size = vec![1; len];
+        Self {
+            par,
+            size,
+            ds,
+            count: len,
+        }
+    }
+    pub fn find(&mut self, x: usize) -> usize {
+        if self.par[x] == x {
+            x
+        } else {
+            self.par[x] = self.find(self.par[x]);
+            self.par[x]
+        }
+    }
+    pub fn is_same(&mut self, x: usize, y: usize) -> bool {
+        self.find(x) == self.find(y)
+    }
+    pub fn size(&mut self, x: usize) -> usize {
+        let root = self.find(x);
+        self.size[root]
+    }
+    pub fn unite(&mut self, x: usize, y: usize) {
+        let (mut x, mut y) = (self.find(x), self.find(y));
+        if x != y {
+            if self.ds[x].len() < self.ds[y].len() {
+                std::mem::swap(&mut x, &mut y);
+            }
+            self.par[y] = x;
+            self.size[x] += self.size[y];
+            let drained = std::mem::take(&mut self.ds[y]);
+            for (k, v) in drained {
+                *self.ds[x].entry(k).or_insert(0) += v;
+            }
+            self.count -= 1;
+        }
+    }
+    pub fn count(&self) -> usize {
+        self.count
+    }
+    pub fn ds(&mut self, i: usize) -> &HashMap<usize, u32> {
+        let par = self.find(i);
+        &self.ds[par]
     }
 }
 
