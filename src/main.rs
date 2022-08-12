@@ -32,6 +32,8 @@ mod print;
 #[allow(dead_code)]
 mod shakutori;
 #[allow(dead_code)]
+mod square_division;
+#[allow(dead_code)]
 mod tree;
 
 fn main() {
