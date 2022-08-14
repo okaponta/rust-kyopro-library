@@ -225,9 +225,9 @@ impl UnionFind {
         self.par[x]
     }
 
-    // fn issame(&mut self, x: usize, y: usize) -> bool {
-    //     self.root(x) == self.root(y)
-    // }
+    fn issame(&mut self, x: usize, y: usize) -> bool {
+        self.root(x) == self.root(y)
+    }
 
     fn unite(&mut self, mut parent: usize, mut child: usize) -> bool {
         parent = self.root(parent);
