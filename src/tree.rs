@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use itertools::Itertools;
 use superslice::Ext;
 
@@ -204,63 +202,53 @@ impl LazySegmentTree {
     }
 }
 
-// https://atcoder.jp/contests/abc183/submissions/19374177
-// ↑から拝借。。小さい方の要素を結合したいときに使おう。あとで書き直す。
-#[derive(Clone)]
-pub struct UnionFind {
+// https://zenn.dev/nakamurus/articles/f398b7f4d7618ea5b7eb
+// ↑から拝借。。。あとで書き直す。
+struct UnionFind {
     par: Vec<usize>,
-    size: Vec<usize>,
-    ds: Vec<HashMap<usize, u32>>,
-    count: usize,
+    siz: Vec<usize>,
 }
 
 impl UnionFind {
-    pub fn new(len: usize, ds: Vec<HashMap<usize, u32>>) -> Self {
-        let par: Vec<_> = (0..len).collect();
-        let size = vec![1; len];
-        Self {
-            par,
-            size,
-            ds,
-            count: len,
+    fn new(n: usize) -> Self {
+        UnionFind {
+            par: (0..n).collect(),
+            siz: vec![1; n],
         }
     }
-    pub fn find(&mut self, x: usize) -> usize {
+
+    fn root(&mut self, x: usize) -> usize {
         if self.par[x] == x {
-            x
-        } else {
-            self.par[x] = self.find(self.par[x]);
-            self.par[x]
+            return x;
         }
+        self.par[x] = self.root(self.par[x]);
+        self.par[x]
     }
-    pub fn is_same(&mut self, x: usize, y: usize) -> bool {
-        self.find(x) == self.find(y)
-    }
-    pub fn size(&mut self, x: usize) -> usize {
-        let root = self.find(x);
-        self.size[root]
-    }
-    pub fn unite(&mut self, x: usize, y: usize) {
-        let (mut x, mut y) = (self.find(x), self.find(y));
-        if x != y {
-            if self.ds[x].len() < self.ds[y].len() {
-                std::mem::swap(&mut x, &mut y);
-            }
-            self.par[y] = x;
-            self.size[x] += self.size[y];
-            let drained = std::mem::take(&mut self.ds[y]);
-            for (k, v) in drained {
-                *self.ds[x].entry(k).or_insert(0) += v;
-            }
-            self.count -= 1;
+
+    // fn issame(&mut self, x: usize, y: usize) -> bool {
+    //     self.root(x) == self.root(y)
+    // }
+
+    fn unite(&mut self, mut parent: usize, mut child: usize) -> bool {
+        parent = self.root(parent);
+        child = self.root(child);
+
+        if parent == child {
+            return false;
         }
+
+        if self.siz[parent] < self.siz[child] {
+            std::mem::swap(&mut parent, &mut child);
+        }
+
+        self.par[child] = parent;
+        self.siz[parent] += self.siz[child];
+        true
     }
-    pub fn count(&self) -> usize {
-        self.count
-    }
-    pub fn ds(&mut self, i: usize) -> &HashMap<usize, u32> {
-        let par = self.find(i);
-        &self.ds[par]
+
+    fn size(&mut self, x: usize) -> usize {
+        let root = self.root(x);
+        self.siz[root]
     }
 }
 
