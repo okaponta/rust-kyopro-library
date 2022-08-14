@@ -37,6 +37,7 @@ fn size_subset_search(n: usize, k: usize) {
 }
 
 // 間に合わない場合はlog落とせる
+// これは足し合わせてt以下の最大の数をもとめる問題
 // https://fairy-lettuce.hatenadiary.com/entry/2020/11/23/084343
 fn half_bit_search(n: usize, t: usize, a: Vec<usize>) -> usize {
     let n1 = n / 2;
@@ -71,4 +72,34 @@ fn half_bit_search(n: usize, t: usize, a: Vec<usize>) -> usize {
         }
     }
     ans
+}
+
+// 巡回セールスマン問題
+fn bit_dp_template(n: usize, uvc: Vec<(usize, usize, usize)>) -> usize {
+    let inf = 1 << 60;
+    let mut edges = vec![vec![]; n];
+    for (u, v, c) in uvc {
+        edges[u].push((v, c));
+    }
+    // dp[S][i]
+    // Sがこれまで通ってきた点の集合(右が0、左がnのbit)
+    // iが直前にいたマス
+    let mut dp = vec![vec![inf; n]; 1 << n];
+    dp[0][0] = 0;
+    for i in 0..1 << n {
+        for j in 0..n {
+            if dp[i][j] == inf {
+                // 到達不可
+                continue;
+            }
+            for &(next, cost) in &edges[j] {
+                if i >> next & 1 == 1 {
+                    // 訪問済み
+                    continue;
+                }
+                dp[i | 1 << next][next] = dp[i | 1 << next][next].min(dp[i][j] + cost);
+            }
+        }
+    }
+    dp[(1 << n) - 1][0]
 }
