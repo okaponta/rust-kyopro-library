@@ -24,6 +24,8 @@ mod integer;
 #[allow(dead_code)]
 mod matching;
 #[allow(dead_code)]
+mod matrix;
+#[allow(dead_code)]
 mod physics;
 #[allow(dead_code)]
 mod prime;
