@@ -1,5 +1,35 @@
 use std::collections::VecDeque;
 
+// initの地点からの距離を求める。
+// okじゃないとこには移動しない
+fn bfs(
+    h: usize,
+    w: usize,
+    init: (usize, usize),
+    grid: &Vec<Vec<char>>,
+    ok: char,
+) -> Vec<Vec<usize>> {
+    let mut res = vec![vec![1 << 60; w]; h];
+    let mut q = VecDeque::new();
+    res[init.0][init.1] = 0usize;
+    q.push_back((init.0, init.1));
+    while let Some((x, y)) = q.pop_front() {
+        let d = res[x][y];
+        for (dx, dy) in vec![(!0, 0), (0, 1), (0, !0), (1, 0)] {
+            let nx = x.wrapping_add(dx);
+            let ny = y.wrapping_add(dy);
+            if h <= nx || w <= ny {
+                continue;
+            }
+            if grid[nx][ny] == ok && d < res[nx][ny] {
+                q.push_back((nx, ny));
+                res[nx][ny] = d + 1;
+            }
+        }
+    }
+    res
+}
+
 fn move_grid_4(n: usize, x: usize, y: usize) {
     for (dx, dy) in vec![(!0, 0), (0, 1), (0, !0), (1, 0)] {
         let xi = x.wrapping_add(dx);
