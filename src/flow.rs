@@ -142,7 +142,7 @@ impl Dinic {
 }
 
 // 最小費用流
-struct MinCostFlow {
+pub struct MinCostFlow {
     n: usize,
     edge: Vec<Vec<(usize, i64, i64, usize)>>,
     h: Vec<i64>,
@@ -177,8 +177,11 @@ impl MinCostFlow {
 
     pub fn min_cost_flow(&mut self, s: usize, t: usize, mut f: i64) -> i64 {
         let mut res = 0;
+        // hの初期化
+        self.h = vec![0; self.n];
         let mut heap = std::collections::BinaryHeap::new();
         while f > 0 {
+            // ダイクストラ法を用いてhを更新
             self.dist = vec![1 << 60; self.n];
             self.dist[s] = 0;
             heap.push((std::cmp::Reverse(0), s));
@@ -195,31 +198,6 @@ impl MinCostFlow {
                         heap.push((std::cmp::Reverse(self.dist[to]), to));
                     }
                 }
-            }
-            // これ以上流せない
-            if self.dist[t] == 1 << 60 {
-                return -1;
-            }
-            for v in 0..self.n {
-                self.h[v] += self.dist[v];
-            }
-
-            // 最短経路に流す
-            let mut d = f;
-            let mut v = t;
-            while v != s {
-                // 流せるキャパシティを計算
-                d = d.min(self.edge[self.prevv[v]][self.preve[v]].1);
-                v = self.prevv[v];
-            }
-            f -= d;
-            res += d * self.h[t];
-            let mut v = t;
-            while v != s {
-                let rev = self.edge[self.prevv[v]][self.preve[v]].3;
-                self.edge[self.prevv[v]][self.preve[v]].1 -= d;
-                self.edge[v][rev].1 += d;
-                v = self.prevv[v];
             }
             // これ以上流せない
             if self.dist[t] == 1 << 60 {

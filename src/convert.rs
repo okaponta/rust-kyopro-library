@@ -13,6 +13,7 @@ fn compress(source: &[usize]) -> HashMap<usize, usize> {
     result
 }
 
+// ソートはあらかじめしてから呼び出すこと
 fn run_length_encode<T: Eq>(a: Vec<T>) -> Vec<(T, usize)> {
     let mut a = a.into_iter().map(|a| (a, 1)).collect::<Vec<_>>();
     a.dedup_by(|a, b| {
