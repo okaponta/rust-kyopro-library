@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 // 2つのベクトルの内積を返却
 // これが負なら、ベクトルのなす角は90度以上
-fn inner_product(x0: i32, y0: i32, x1: i32, y1: i32) -> i32 {
+fn inner_product(x0: i64, y0: i64, x1: i64, y1: i64) -> i64 {
     x0 * x1 + y0 * y1
 }
 
@@ -10,7 +10,7 @@ fn inner_product(x0: i32, y0: i32, x1: i32, y1: i32) -> i32 {
 // これの絶対値がAB/ACのつくる平行四辺形の面積
 // 正なら時計周り、負なら半時計周り、0なら一直線上
 // 外積の絶対値をABの長さで割れば点と線の距離が求まる。
-fn outer_product(x0: i32, y0: i32, x1: i32, y1: i32) -> i32 {
+fn outer_product(x0: i64, y0: i64, x1: i64, y1: i64) -> i64 {
     x0 * y1 - y0 * x1
 }
 

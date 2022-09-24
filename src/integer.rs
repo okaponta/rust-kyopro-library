@@ -5,6 +5,16 @@ fn div_ceil(a: i32, b: i32) -> i32 {
     (a + b - 1) / b
 }
 
+// 負の数があるときもいい感じに切り上げ、切り捨てする
+// 図形問題とかでよく使うかも
+fn div(a: i64, b: i64, ceil: bool) -> i64 {
+    if ceil {
+        (a + b - 1).div_euclid(b)
+    } else {
+        a.div_euclid(b)
+    }
+}
+
 // 1+2+...+n
 fn tousa_sum_one(n: i64) -> i64 {
     n * (n + 1) / 2
@@ -19,6 +29,11 @@ fn tousa_square_sum_one(n: i64) -> i64 {
 fn tousa_sum(max: i64, c: i64) -> i64 {
     let n = max / c;
     (c + n * c) * n / 2
+}
+
+// 初項a, 交差c, 要素数n
+fn tousa_sum_term(a: usize, c: usize, n: usize) -> usize {
+    a * n + n * (n - 1) / 2 * c
 }
 
 // 1 + c + c^2 + c^3 + c^4+...(0<c<1)
@@ -82,6 +97,7 @@ fn lcm(a: i64, b: i64) -> i64 {
 // 拡張ユークリッドの互除法
 // ax + by = gcd(a,b) の整数解を求める
 // mod bにおけるaの逆元がxになるよ
+// 初期値はxもyも0をいれておけば大丈夫なはず
 // 参照を以下関数に渡す
 fn extend_euclid(a: i64, b: i64, x: &mut i64, y: &mut i64) -> i64 {
     if b == 0 {
