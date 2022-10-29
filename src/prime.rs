@@ -21,6 +21,43 @@ fn factorize(mut n: i64) -> Vec<(i64, i64)> {
     res
 }
 
+// 階層化なしで返却する
+fn factorize_flat(mut n: i64) -> Vec<i64> {
+    let mut res = vec![];
+    for i in 2..=n.sqrt() {
+        if n % i != 0 {
+            continue;
+        }
+        while n % i == 0 {
+            res.push(i);
+            n /= i;
+        }
+    }
+    if n != 1 {
+        res.push(n);
+    }
+    res
+}
+
+fn moebius(n: i64) -> Vec<(i64, i64)> {
+    let mut res = vec![];
+    // 平方数で割り切れるものは除外する
+    let primes = factorize(n).iter().map(|(f, _)| *f).collect::<Vec<_>>();
+    let m = primes.len();
+    for i in 0..1 << m {
+        let mut mu = 1;
+        let mut d = 1;
+        for j in 0..m {
+            if i >> j & 1 == 1 {
+                mu *= -1;
+                d *= primes[j];
+            }
+        }
+        res.push((d, mu));
+    }
+    res
+}
+
 // 素数かどうかを判定する
 // 計算量はO(√N)
 fn is_prime(n: i64) -> bool {

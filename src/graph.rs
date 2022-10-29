@@ -331,6 +331,7 @@ pub struct LCA {
     n: usize,
     k: usize,
     // とある頂点の1,2,4...個先の頂点を保持
+    // parent[0][i]...iの頂点の1つ祖先
     parent: Vec<Vec<usize>>,
     dist: Vec<usize>,
 }

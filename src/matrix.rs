@@ -29,6 +29,25 @@ fn multiply(a: &Vec<Vec<usize>>, b: &Vec<Vec<usize>>, n: usize) -> Vec<Vec<usize
     res
 }
 
+fn mat_mul(a: &[Vec<i64>], b: &[Vec<i64>], modulo: i64) -> Vec<Vec<i64>> {
+    let n = a.len();
+    let m = b[0].len();
+    let l = a[0].len();
+    assert_eq!(l, b.len());
+
+    let mut c = vec![vec![0; m]; n];
+    for i in 0..n {
+        for j in 0..m {
+            for k in 0..l {
+                c[i][j] += a[i][k] * b[k][j];
+                c[i][j] %= modulo;
+            }
+        }
+    }
+
+    c
+}
+
 // 各項のmodをとる
 fn rem(a: &mut Vec<Vec<usize>>, modulo: usize, n: usize) {
     for i in 0..n {
