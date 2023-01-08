@@ -75,14 +75,14 @@ where
 // フェニック木。以下2つができる。1-indexedなので注意
 // 1. ai に v を加算する
 // 2. a1+a2+...+aiを求める
-struct FenwickTree {
+pub struct FenwickTree {
     len: usize,
     data: Vec<i64>,
 }
 
 impl FenwickTree {
     // a1~anの配列を作成
-    fn new(n: usize) -> Self {
+    pub fn new(n: usize) -> Self {
         Self {
             len: n + 1,
             data: vec![0; n + 1],
@@ -90,7 +90,7 @@ impl FenwickTree {
     }
 
     // aiにvを加算する
-    fn add(&mut self, i: usize, v: i64) {
+    pub fn add(&mut self, i: usize, v: i64) {
         assert!(i > 0);
         assert!(i < self.len);
         let mut i = i as i64;
@@ -101,7 +101,7 @@ impl FenwickTree {
     }
 
     // a1+a2+...aiを計算する
-    fn sum(&self, i: usize) -> i64 {
+    pub fn sum(&self, i: usize) -> i64 {
         assert!(i < self.len);
         let mut i = i as i64;
         let mut sum = 0;
@@ -113,7 +113,7 @@ impl FenwickTree {
     }
 
     // ai+...+ajを計算する
-    fn range(&self, i: usize, j: usize) -> i64 {
+    pub fn range(&self, i: usize, j: usize) -> i64 {
         assert!(i <= j);
         assert!(j < self.len);
         self.sum(j) - self.sum(i - 1)

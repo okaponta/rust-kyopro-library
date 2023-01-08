@@ -36,6 +36,8 @@ mod shakutori;
 #[allow(dead_code)]
 mod square_division;
 #[allow(dead_code)]
+mod string;
+#[allow(dead_code)]
 mod tree;
 #[allow(dead_code)]
 mod vector;

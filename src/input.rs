@@ -37,3 +37,12 @@ fn read() -> String {
     std::io::stdin().read_line(&mut buf).ok();
     buf.split_whitespace().next().unwrap().to_string()
 }
+
+// 以下でも使える
+// let stdin = stdin();
+// let mut source = LineSource::new(BufReader::new(stdin.lock()));
+
+// input! {
+//     from &mut source,
+//     n: u32
+// }
