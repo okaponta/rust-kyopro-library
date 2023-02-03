@@ -163,6 +163,35 @@ fn num_multiple(n: i64, k: usize, v: Vec<i64>) -> i64 {
     ans
 }
 
+// 中国式剰余定理
+// (割る数, 余り)のVecを渡す。互いに素であること
+fn crt(set: Vec<(usize, usize)>) -> usize {
+    let mut res = 0;
+    let mut lcm = 1;
+    for (div, rem) in set {
+        loop {
+            if res % div == rem {
+                break;
+            }
+            res += lcm;
+        }
+        lcm *= div;
+    }
+    res
+}
+
+// 和と積を出力する
+fn sumpro(div: Vec<usize>) {
+    let mut sum = 0;
+    let mut product = 1;
+    for d in div {
+        sum += d;
+        product *= d;
+    }
+    println!("sum: {}", sum);
+    println!("product: {}", product);
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

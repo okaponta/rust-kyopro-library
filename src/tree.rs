@@ -118,6 +118,21 @@ impl FenwickTree {
         assert!(j < self.len);
         self.sum(j) - self.sum(i - 1)
     }
+
+    // 和がs以下の位置を返却
+    pub fn lower(&self, s: i64) -> usize {
+        let mut lower = 0;
+        let mut upper = self.len;
+        while upper - lower > 1 {
+            let med = (lower + upper) / 2;
+            if self.sum(med) <= s {
+                lower = med;
+            } else {
+                upper = med;
+            }
+        }
+        lower
+    }
 }
 
 // 転倒数を求める。
@@ -202,53 +217,69 @@ impl LazySegmentTree {
     }
 }
 
-// https://zenn.dev/nakamurus/articles/f398b7f4d7618ea5b7eb
-// ↑から拝借。。。あとで書き直す。
 struct UnionFind {
-    par: Vec<usize>,
-    siz: Vec<usize>,
+    parent: Vec<usize>,
+    size: Vec<usize>,
+    rank: Vec<usize>,
 }
 
 impl UnionFind {
     fn new(n: usize) -> Self {
         UnionFind {
-            par: (0..n).collect(),
-            siz: vec![1; n],
+            parent: (0..n).collect(),
+            size: vec![1; n],
+            rank: vec![0; n],
         }
     }
 
-    fn root(&mut self, x: usize) -> usize {
-        if self.par[x] == x {
+    // 根を返却
+    pub fn root(&mut self, x: usize) -> usize {
+        // parentが自分自身の場合は根
+        if self.parent[x] == x {
             return x;
         }
-        self.par[x] = self.root(self.par[x]);
-        self.par[x]
+        // 経路圧縮
+        self.parent[x] = self.root(self.parent[x]);
+        self.parent[x]
     }
 
-    fn issame(&mut self, x: usize, y: usize) -> bool {
+    // xとyが同じ根か判定
+    pub fn equiv(&mut self, x: usize, y: usize) -> bool {
         self.root(x) == self.root(y)
     }
 
-    fn unite(&mut self, mut parent: usize, mut child: usize) -> bool {
-        parent = self.root(parent);
-        child = self.root(child);
-
-        if parent == child {
+    // xとyを合体
+    pub fn union(&mut self, x: usize, y: usize) -> bool {
+        let mut rx = self.root(x);
+        let mut ry = self.root(y);
+        // 既に同じ
+        if rx == ry {
             return false;
         }
 
-        if self.siz[parent] < self.siz[child] {
-            std::mem::swap(&mut parent, &mut child);
+        // ryのrankが小さくなるように調整
+        if self.rank[rx] < self.rank[ry] {
+            std::mem::swap(&mut rx, &mut ry);
         }
-
-        self.par[child] = parent;
-        self.siz[parent] += self.siz[child];
+        // ryの根をrxにする
+        self.parent[ry] = rx;
+        // rxのrank調整
+        if self.rank[rx] == self.rank[ry] {
+            self.rank[rx] += 1;
+        }
+        self.size[rx] += self.size[ry];
         true
     }
 
-    fn size(&mut self, x: usize) -> usize {
+    // xのグループの要素数
+    pub fn size(&mut self, x: usize) -> usize {
         let root = self.root(x);
-        self.siz[root]
+        self.size[root]
+    }
+
+    // 連結かどうかを返却する
+    pub fn is_linked(&mut self) -> bool {
+        self.size(0) == self.size.len()
     }
 }
 
