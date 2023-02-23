@@ -217,7 +217,7 @@ impl LazySegmentTree {
     }
 }
 
-struct UnionFind {
+pub struct UnionFind {
     parent: Vec<usize>,
     size: Vec<usize>,
     rank: Vec<usize>,

@@ -71,22 +71,62 @@ impl Com {
 }
 
 // 二項定理 nまでのiCjを計算して返却する。(k<10^7,n<10^9と巨大のとき)
-// MODが素数である必要あり。Nが固定値の場合に使える。
-// 計算量はO(K)/クエリはO(1)
-struct Comb {
-    c: Vec<usize>,
+// MODが素数である必要あり。
+// 計算量はO(K)/クエリはO(K)
+pub struct Comb {
+    n: usize,
+    fact_inv: Vec<usize>,
     modulo: usize,
 }
 
 impl Comb {
     pub fn init(n: usize, k: usize, modulo: usize) -> Self {
+        let mut inv = vec![0; k + 1];
+        let mut fact_inv = vec![0; k + 1];
+        inv[1] = 1;
+        fact_inv[0] = 1;
+        fact_inv[1] = 1;
+        for i in 2..=k {
+            inv[i] = modulo - (inv[modulo % i] * (modulo / i)) % modulo;
+            fact_inv[i] = (fact_inv[i - 1] * inv[i]) % modulo;
+        }
+        Self {
+            n,
+            fact_inv,
+            modulo,
+        }
+    }
+
+    // nCk
+    pub fn get(&self, k: usize) -> usize {
+        let mut ans = 1;
+        for i in self.n - k + 1..=self.n {
+            ans *= i;
+            ans %= self.modulo;
+        }
+        ans * self.fact_inv[k] % self.modulo
+    }
+}
+
+// 二項定理 nまでのiCjを計算して返却する。(k<10^7,n<10^9と巨大のとき)
+// MODが素数である必要あり。Nが固定値の場合に使える。
+// 計算量はO(K)/クエリはO(1)
+struct CombFixed {
+    c: Vec<usize>,
+}
+
+impl CombFixed {
+    pub fn init(n: usize, k: usize, modulo: usize) -> Self {
         let mut c = vec![0; k + 1];
         c[0] = 1;
         c[1] = n;
+        let mut inv = vec![0; k + 1];
+        inv[1] = 1;
         for i in 2..(k + 1) {
-            c[i] = (c[i - 1] * (n - i + 1) / i) % modulo;
+            inv[i] = modulo - (inv[modulo % i] * (modulo / i)) % modulo;
+            c[i] = (c[i - 1] * (n - i + 1) % modulo * inv[i]) % modulo;
         }
-        Self { c, modulo }
+        Self { c }
     }
 
     // nCk
