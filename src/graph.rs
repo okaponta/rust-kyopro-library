@@ -64,6 +64,17 @@ fn dfs(prev: usize, cur: usize, edges: &Vec<Vec<usize>>, d: &mut Vec<usize>) {
     }
 }
 
+// コストつき
+fn dfs_cost(prev: usize, cur: usize, edges: &Vec<Vec<(usize, usize)>>, d: &mut Vec<usize>) {
+    for &(next, cost) in &edges[cur] {
+        if next == prev {
+            continue;
+        }
+        d[next] = d[cur] + cost;
+        dfs_cost(cur, next, edges, d);
+    }
+}
+
 // スタックオーバーフロー対策、ループがあるやつ対策
 fn bfs(init: usize, n: usize, edges: &Vec<Vec<usize>>) -> Vec<i64> {
     let mut d = vec![-1; n];
@@ -83,18 +94,30 @@ fn bfs(init: usize, n: usize, edges: &Vec<Vec<usize>>) -> Vec<i64> {
     d
 }
 
-fn topo(n: usize, mut g: Vec<Vec<usize>>) {
-    let mut parent = vec![n; n];
-    let mut topo = vec![0];
+fn topo(n: usize, g: &Vec<Vec<usize>>) -> Vec<usize> {
+    let mut ind = vec![0; n];
     for i in 0..n {
-        let v = topo[i];
-        for u in g[v].clone() {
-            parent[u] = v;
-            let x = g[u].iter().position(|p| *p == v).unwrap();
-            g[u].remove(x);
-            topo.push(u);
+        for j in 0..g[i].len() {
+            ind[g[i][j]] += 1;
         }
     }
+    let mut q = std::collections::VecDeque::new();
+    for i in 0..n {
+        if ind[i] == 0 {
+            q.push_back(i);
+        }
+    }
+    let mut topo = vec![];
+    while let Some(cur) = q.pop_front() {
+        topo.push(cur);
+        for &next in g[cur].iter() {
+            ind[next] -= 1;
+            if ind[next] == 0 {
+                q.push_back(next);
+            }
+        }
+    }
+    topo
 }
 
 // 計算量はE×V
@@ -430,6 +453,30 @@ fn tree_diameter_dfs(edges: &Vec<Vec<usize>>, cur: usize, parent: usize) -> (usi
         }
         let mut next = tree_diameter_dfs(edges, to, cur);
         next.0 += 1;
+        ret = ret.max(next);
+    }
+    ret
+}
+
+// コストつきの場合
+fn tree_diameter_cost(edges: &Vec<Vec<(usize, usize)>>) -> (usize, usize, usize) {
+    let l = tree_diameter_dfs_cost(edges, 0, !0);
+    let r = tree_diameter_dfs_cost(edges, l.1, !0);
+    (l.1, r.1, r.0)
+}
+
+fn tree_diameter_dfs_cost(
+    edges: &Vec<Vec<(usize, usize)>>,
+    cur: usize,
+    parent: usize,
+) -> (usize, usize) {
+    let mut ret = (0, cur);
+    for &(to, cost) in &edges[cur] {
+        if to == parent {
+            continue;
+        }
+        let mut next = tree_diameter_dfs_cost(edges, to, cur);
+        next.0 += cost;
         ret = ret.max(next);
     }
     ret

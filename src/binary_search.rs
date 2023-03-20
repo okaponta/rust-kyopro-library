@@ -42,3 +42,17 @@ fn is_med_over(a: &[i64], k: i64) -> bool {
         .collect::<Vec<_>>();
     a.iter().sum::<i32>() > 0
 }
+
+fn lower_bound_f64(v: &Vec<f64>, t: f64) -> usize {
+    let mut lower = 0;
+    let mut upper = v.len();
+    while upper != lower {
+        let med = (lower + upper) / 2;
+        if v[med] < t {
+            lower = med + 1;
+        } else {
+            upper = med;
+        }
+    }
+    lower
+}

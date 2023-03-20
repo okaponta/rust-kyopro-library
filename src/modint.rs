@@ -1,4 +1,5 @@
 const MOD: usize = 1_000_000_007;
+//const MOD: usize = 998244353;
 
 #[derive(Clone, Copy)]
 pub struct ModInt {
@@ -75,5 +76,18 @@ impl std::ops::Sub for ModInt {
 impl std::ops::SubAssign for ModInt {
     fn sub_assign(&mut self, other: Self) {
         *self = *self - other;
+    }
+}
+
+impl std::ops::Mul for ModInt {
+    type Output = ModInt;
+    fn mul(self, other: Self) -> Self {
+        ModInt::new(self.val * other.val)
+    }
+}
+
+impl std::ops::MulAssign for ModInt {
+    fn mul_assign(&mut self, other: Self) {
+        *self = *self * other;
     }
 }
