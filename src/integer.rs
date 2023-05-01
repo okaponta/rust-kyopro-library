@@ -15,6 +15,11 @@ fn div(a: i64, b: i64, ceil: bool) -> i64 {
     }
 }
 
+// 下からi桁目の数字を返却する
+fn get_digit(n: usize, i: usize) -> usize {
+    n % 10usize.pow(i as u32) / 10usize.pow(i as u32 - 1)
+}
+
 // 1+2+...+n
 fn tousa_sum_one(n: i64) -> i64 {
     n * (n + 1) / 2

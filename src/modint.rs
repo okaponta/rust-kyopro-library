@@ -41,7 +41,8 @@ impl ModInt {
 
     pub fn pow(&self, mut n: usize) -> Self {
         let mut x = self.val;
-        let mut ret = if x == 0 { 0 } else { 1 };
+        // let mut ret = if x == 0 { 0 } else { 1 };
+        let mut ret = 1;
         while n > 0 {
             if n & 1 == 1 {
                 ret = ret * x % MOD;
