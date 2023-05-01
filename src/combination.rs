@@ -1,7 +1,7 @@
 // 二項定理 nまでのiCjを計算して返却する。
 // MODが素数である必要あり。
 // 計算量はO(N)
-struct Binom {
+pub struct Binom {
     fact: Vec<usize>,
     fact_inv: Vec<usize>,
     modulo: usize,
