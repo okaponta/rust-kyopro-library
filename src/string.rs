@@ -1,3 +1,6 @@
+// 最長共通接頭辞の長さ
+// 例えば、hohohehoiなら
+// 9,0,2,0,1,0,2,0,0
 fn z(s: &Vec<&char>) -> Vec<usize> {
     let n = s.len();
     let mut res = vec![0; n + 1];
@@ -55,4 +58,45 @@ fn calc_edge(a: [usize; 26]) -> (usize, usize) {
     let start = (0..26).into_iter().find(|&i| a[i] != 0).unwrap_or(26);
     let end = (0..26).into_iter().rev().find(|&i| a[i] != 0).unwrap_or(0);
     (start, end)
+}
+
+// aはbに含まれているか？
+// ローリングハッシュを用いて実装
+fn contain(a: Vec<char>, b: Vec<char>) -> bool {
+    let modulo = 4294967029;
+
+    let base = 3415016898;
+    let al = a.len();
+    let bl = b.len();
+    if bl < al {
+        return false;
+    }
+
+    let mut t = 1;
+    for _ in 0..al {
+        t *= base;
+        t %= modulo;
+    }
+
+    let mut ah = 0;
+    let mut bh = 0;
+    for i in 0..al {
+        // ハッシュ値が0になるとすぐ衝突するので、1以上にする
+        ah = (ah * base + (a[i] as u8 - b'a' + 1) as usize) % modulo;
+    }
+    for i in 0..bl {
+        bh = (bh * base + (b[i] as u8 - b'a' + 1) as usize) % modulo;
+    }
+
+    // bの場所を1文字ずつ進めながらハッシュ値をチェック
+    for i in 0..=bl - al {
+        if ah == bh {
+            return true;
+        }
+        if i + al < bl {
+            bh = bh * base + (b[i + al] as u8 - b'a' + 1) as usize
+                - (b[i] as u8 - b'a' + 1) as usize * t;
+        }
+    }
+    false
 }

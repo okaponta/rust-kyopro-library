@@ -18,6 +18,8 @@ mod graph;
 #[allow(dead_code)]
 mod grid;
 #[allow(dead_code)]
+mod hash;
+#[allow(dead_code)]
 mod input;
 #[allow(dead_code)]
 mod integer;

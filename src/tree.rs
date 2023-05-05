@@ -133,6 +133,14 @@ impl FenwickTree {
         }
     }
 
+    // aiをvで置き換える
+    pub fn update(&mut self, i: usize, v: i64) {
+        assert!(i > 0);
+        assert!(i < self.len);
+        let cur = self.range(i, i);
+        self.add(i, v - cur);
+    }
+
     // a1+a2+...aiを計算する
     pub fn sum(&self, i: usize) -> i64 {
         assert!(i < self.len);
@@ -180,6 +188,36 @@ fn inversion_num(a: Vec<usize>) -> i64 {
         fw.add(a[i], 1);
     }
     inv
+}
+
+// findCentroids(v,N)みたいな感じでよぶ
+// sizeSubtree[v] := v を根とする部分ツリーのサイズ
+fn find_centroids(
+    v: usize,
+    parent: usize,
+    n: usize,
+    size: &mut Vec<usize>,
+    g: &Vec<Vec<usize>>,
+    ans: &mut Vec<usize>,
+) {
+    size[v] = 1;
+    let mut is_centroid = true;
+    for &child in &g[v] {
+        if child == parent {
+            continue;
+        }
+        find_centroids(child, v, n, size, g, ans);
+        if n / 2 < size[child] {
+            is_centroid = false;
+        }
+        size[v] += size[child];
+    }
+    if n / 2 < n - size[v] {
+        is_centroid = false;
+    }
+    if is_centroid {
+        ans.push(v);
+    }
 }
 
 struct LazySegmentTree {

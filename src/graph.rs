@@ -75,6 +75,78 @@ fn dfs_cost(prev: usize, cur: usize, edges: &Vec<Vec<(usize, usize)>>, d: &mut V
     }
 }
 
+// ！！！まだ動作確認できてない！！！
+// 訪問順と深さと各頂点への行きと帰りを記録
+// vs dfsの訪問順に頂点を記録(行きと帰りの2回記録される)
+// depth dfsの訪問順に深さを記録(行きと帰りの2回記録される)
+// id 各頂点でvsに現れるインデックス(行きと帰り)
+fn dfs_vs(
+    prev: usize,
+    cur: usize,
+    edges: &Vec<Vec<usize>>,
+    k: &mut usize,
+    d: usize,
+    vs: &mut Vec<usize>,
+    depth: &mut Vec<usize>,
+    id: &mut Vec<(usize, usize)>,
+) {
+    for &next in &edges[cur] {
+        id[cur].0 = *k;
+        vs[*k] = cur;
+        depth[*k] = d;
+        *k += 1;
+        if next == prev {
+            continue;
+        }
+        dfs_vs(cur, next, edges, k, d + 1, vs, depth, id);
+        id[cur].1 = *k;
+        vs[*k] = cur;
+        depth[*k] = d;
+        *k += 1;
+    }
+}
+
+fn dfs_vs_cost(
+    prev: usize,
+    cur: usize,
+    edges: &Vec<Vec<(usize, usize)>>,
+    k: &mut usize,
+    d: usize,
+    distance: usize,
+    vs: &mut Vec<usize>,
+    dist: &mut Vec<usize>,
+    depth: &mut Vec<usize>,
+    id: &mut Vec<(usize, usize)>,
+) {
+    for &(next, cost) in &edges[cur] {
+        id[cur].0 = *k;
+        vs[*k] = cur;
+        depth[*k] = d;
+        dist[*k] = distance;
+        *k += 1;
+        if next == prev {
+            continue;
+        }
+        dfs_vs_cost(
+            cur,
+            next,
+            edges,
+            k,
+            d + 1,
+            distance + cost,
+            vs,
+            dist,
+            depth,
+            id,
+        );
+        id[cur].1 = *k;
+        vs[*k] = cur;
+        depth[*k] = d;
+        dist[*k] = distance;
+        *k += 1;
+    }
+}
+
 // スタックオーバーフロー対策、ループがあるやつ対策
 fn bfs(init: usize, n: usize, edges: &Vec<Vec<usize>>) -> Vec<i64> {
     let mut d = vec![-1; n];
