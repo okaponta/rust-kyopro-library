@@ -39,6 +39,8 @@ fn read() -> String {
 }
 
 // 以下でも使える
+// use std::io::{stdin, BufReader};
+// use proconio::{input, source::line::LineSource};
 // let stdin = stdin();
 // let mut source = LineSource::new(BufReader::new(stdin.lock()));
 

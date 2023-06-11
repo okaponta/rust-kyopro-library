@@ -1,24 +1,24 @@
+use super::modint::ModInt;
+
 // 行列式のn乗
-fn pow(mut a: Vec<Vec<usize>>, mut n: usize, modulo: usize, size: usize) -> Vec<Vec<usize>> {
-    let mut b = vec![vec![0; size]; size];
-    for i in 0..size {
-        b[i][i] = 1;
+fn pow(mut a: Vec<Vec<ModInt>>, mut n: usize) -> Vec<Vec<ModInt>> {
+    let mut b = vec![vec![ModInt::zero(); a.len()]; a.len()];
+    for i in 0..a.len() {
+        b[i][i] = ModInt::one();
     }
     while 0 < n {
         if n & 1 == 1 {
-            b = multiply(&b, &a, size);
-            rem(&mut b, modulo, size);
+            b = mul(&a, &b);
         }
-        a = multiply(&a, &a, size);
-        rem(&mut a, modulo, size);
+        a = mul(&a, &a);
         n >>= 1;
     }
     b
 }
 
-// 行列式の掛け算
-fn multiply(a: &Vec<Vec<usize>>, b: &Vec<Vec<usize>>, n: usize) -> Vec<Vec<usize>> {
-    let mut res = vec![vec![0; n]; n];
+fn mul(a: &Vec<Vec<ModInt>>, b: &Vec<Vec<ModInt>>) -> Vec<Vec<ModInt>> {
+    let n = a.len();
+    let mut res = vec![vec![ModInt::zero(); n]; n];
     for i in 0..n {
         for j in 0..n {
             for k in 0..n {
@@ -27,25 +27,6 @@ fn multiply(a: &Vec<Vec<usize>>, b: &Vec<Vec<usize>>, n: usize) -> Vec<Vec<usize
         }
     }
     res
-}
-
-fn mat_mul(a: &[Vec<i64>], b: &[Vec<i64>], modulo: i64) -> Vec<Vec<i64>> {
-    let n = a.len();
-    let m = b[0].len();
-    let l = a[0].len();
-    assert_eq!(l, b.len());
-
-    let mut c = vec![vec![0; m]; n];
-    for i in 0..n {
-        for j in 0..m {
-            for k in 0..l {
-                c[i][j] += a[i][k] * b[k][j];
-                c[i][j] %= modulo;
-            }
-        }
-    }
-
-    c
 }
 
 // 各項のmodをとる

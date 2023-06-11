@@ -9,8 +9,11 @@ fn bfs(
     grid: &Vec<Vec<char>>,
     ok: char,
 ) -> Vec<Vec<usize>> {
+    let mut visited = vec![vec![false; w]; h];
     let mut res = vec![vec![1 << 60; w]; h];
     let mut q = VecDeque::new();
+
+    visited[init.0][init.1] = true;
     res[init.0][init.1] = 0usize;
     q.push_back((init.0, init.1));
     while let Some((x, y)) = q.pop_front() {
@@ -21,8 +24,12 @@ fn bfs(
             if h <= nx || w <= ny {
                 continue;
             }
+            if visited[nx][ny] {
+                continue;
+            }
             if grid[nx][ny] == ok && d < res[nx][ny] {
                 q.push_back((nx, ny));
+                visited[nx][ny] = true;
                 res[nx][ny] = d + 1;
             }
         }
