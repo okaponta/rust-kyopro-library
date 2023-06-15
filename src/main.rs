@@ -10,6 +10,8 @@ mod convert;
 #[allow(dead_code)]
 mod doubling;
 #[allow(dead_code)]
+mod fft;
+#[allow(dead_code)]
 mod flow;
 #[allow(dead_code)]
 mod geometry;
