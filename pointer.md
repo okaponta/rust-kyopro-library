@@ -27,6 +27,7 @@
   - [index を含めて重複する数字を管理](https://github.com/okaponta/atcoder-rust/blob/master/abc217/src/bin/e.rs)
   - [配列に数字を挿入しながら指定された数字から k 番目を出力](https://github.com/okaponta/atcoder-rust/blob/master/abc241/src/bin/d.rs)
   - [大きさをもった状態で管理して処理したい](https://github.com/okaponta/atcoder-rust/blob/master/abc245/src/bin/e.rs)
+  - [BTreeSetの基本操作まとめみたいな問題](https://github.com/okaponta/atcoder-rust/blob/master/abc308/src/bin/g.rs)
 
 ## BinaryTreeMap
 - ソートされた状態で map に格納する

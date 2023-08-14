@@ -329,6 +329,7 @@ impl UnionFind {
         }
 
         // ryのrankが小さくなるように調整
+        // ここを省略するとrxが親になる
         if self.rank[rx] < self.rank[ry] {
             std::mem::swap(&mut rx, &mut ry);
         }

@@ -76,3 +76,61 @@ mod fft {
         a.iter().map(|&x| x * inv_n).collect()
     }
 }
+
+mod ntt {
+    use super::super::modint::ModInt;
+
+    fn convolve(a: &Vec<usize>, b: &Vec<usize>) -> Vec<ModInt> {
+        let s = a.len() + b.len() - 1;
+        let t = s.next_power_of_two();
+
+        let root = {
+            let z_t_n = ModInt::new(3).pow(119).pow((1 << 23) / t);
+            (0..t).map(|i| z_t_n.pow(i)).collect::<Vec<_>>()
+        };
+
+        let root_inv = {
+            let mut root_inv = root.clone();
+            root_inv[1..].reverse();
+            root_inv
+        };
+
+        let mut a = a.iter().copied().map(ModInt::new).collect::<Vec<_>>();
+        let mut b = b.iter().copied().map(ModInt::new).collect::<Vec<_>>();
+        a.resize(t, ModInt::new(0));
+        b.resize(t, ModInt::new(0));
+        let a_inv = ntt(&a, &root);
+        let b_inv = ntt(&b, &root);
+
+        let c_inv = a_inv
+            .into_iter()
+            .zip(b_inv.into_iter())
+            .map(|(a, b)| a * b)
+            .collect();
+        let c = ntt(&c_inv, &root_inv);
+
+        let t_inv = ModInt::new(t).inv();
+        c.into_iter().take(s).map(|x| x * t_inv).collect()
+    }
+
+    fn ntt(a: &Vec<ModInt>, root: &Vec<ModInt>) -> Vec<ModInt> {
+        let n = a.len();
+        let d = n.trailing_zeros();
+
+        let mask = n - 1;
+        let mut res = a.clone();
+
+        for i in (0..d).map(|i| (n - 1) >> i + 1) {
+            res = (0..n)
+                .map(|j| {
+                    let l = i & j;
+                    let u = j ^ l;
+                    let s = u << 1 & mask;
+                    res[s | l] + root[u] * res[s | i + 1 | l]
+                })
+                .collect();
+        }
+
+        res
+    }
+}

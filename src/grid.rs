@@ -164,6 +164,36 @@ fn count_area(grid: &mut Vec<Vec<bool>>, w: usize, h: usize, target: bool) -> us
     ans
 }
 
+// 空白の行と列を周りからtrimする
+// 途中に空行があってもtrimしない
+fn trim_empty_rounds(
+    mut h: usize,
+    mut w: usize,
+    mut a: Vec<Vec<char>>,
+) -> (usize, usize, Vec<Vec<char>>) {
+    while (0..w).into_iter().all(|j| a[0][j] == '.') {
+        a.remove(0);
+        h -= 1;
+    }
+    while (0..w).into_iter().rev().all(|j| a[h - 1][j] == '.') {
+        a.remove(h - 1);
+        h -= 1;
+    }
+    while (0..h).into_iter().all(|i| a[i][0] == '.') {
+        for j in 0..h {
+            a[j].remove(0);
+        }
+        w -= 1;
+    }
+    while (0..h).into_iter().rev().all(|i| a[i][w - 1] == '.') {
+        for j in 0..h {
+            a[j].remove(w - 1);
+        }
+        w -= 1;
+    }
+    (h, w, a)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
