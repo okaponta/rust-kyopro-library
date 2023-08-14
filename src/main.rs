@@ -4,6 +4,8 @@ mod binary_search;
 #[allow(dead_code)]
 mod bit;
 #[allow(dead_code)]
+mod bridges;
+#[allow(dead_code)]
 mod combination;
 #[allow(dead_code)]
 mod convert;
@@ -37,6 +39,8 @@ mod physics;
 mod prime;
 #[allow(dead_code)]
 mod print;
+#[allow(dead_code)]
+mod set;
 #[allow(dead_code)]
 mod shakutori;
 #[allow(dead_code)]
