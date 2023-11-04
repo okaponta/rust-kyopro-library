@@ -1,5 +1,6 @@
-// let mut seg_tree = LazySegTree::new(vec![Node::new(); 200_001], merge, update, composition);
+// let mut seg_tree = LazySegTree::new(vec![Node::new(); n], merge, update, composition);
 // https://atcoder.jp/contests/abc327/submissions/47277315
+// https://atcoder.jp/contests/abc322/submissions/47283909
 
 #[derive(Clone, Copy, Debug)]
 struct Node {
