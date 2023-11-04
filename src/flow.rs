@@ -1,3 +1,4 @@
+// 0がs、n-1がt
 struct FordFulkerson {
     n: usize,
     edge: Vec<Vec<(usize, i64, usize)>>,

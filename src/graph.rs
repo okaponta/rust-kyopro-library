@@ -251,8 +251,9 @@ impl WarshallFloyd {
         for k in 0..n {
             for i in 0..n {
                 for j in 0..n {
-                    // 普通に足す場合は足してこの場合はmaxをとる問題だった
-                    distance[i][j] = distance[i][j].min(distance[i][k].max(distance[k][j]));
+                    distance[i][j] = distance[i][j].min(distance[i][k] + distance[k][j]);
+                    // 普通に足す場合は足してこの場合はmaxをとる問題だった(こんなパターンもあるよ紹介)
+                    // distance[i][j] = distance[i][j].min(distance[i][k].max(distance[k][j]));
                 }
             }
         }

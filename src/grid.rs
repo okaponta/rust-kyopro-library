@@ -194,6 +194,75 @@ fn trim_empty_rounds(
     (h, w, a)
 }
 
+// 90度回転
+fn rotate_2d_vector(v: &Vec<Vec<char>>) -> Vec<Vec<char>> {
+    let mut new_v = vec![vec!['.'; v.len()]; v[0].len()];
+    for i in 0..v.len() {
+        for j in 0..v[0].len() {
+            new_v[j][v.len() - 1 - i] = v[i][j];
+        }
+    }
+    return new_v;
+}
+
+// 左上につめる
+fn upleft(v: &Vec<Vec<char>>) -> Vec<Vec<char>> {
+    let w = v.len();
+    let h = v[0].len();
+    let mut new_v = vec![vec!['.'; w]; h];
+    let mut upshift = 0;
+    let mut leftshift = 0;
+    for i in 0..h {
+        if (0..w).into_iter().all(|j| v[i][j] == '.') {
+            upshift += 1;
+        } else {
+            break;
+        }
+    }
+    for j in 0..w {
+        if (0..h).into_iter().all(|i| v[i][j] == '.') {
+            leftshift += 1;
+        } else {
+            break;
+        }
+    }
+    for i in upshift..h {
+        for j in leftshift..w {
+            new_v[i - upshift][j - leftshift] = v[i][j];
+        }
+    }
+    return new_v;
+}
+
+// 二次元累積和
+// TODO: きちんと書く
+pub struct TwoDSum {
+    n: usize,
+    grid: Vec<Vec<usize>>,
+}
+
+impl TwoDSum {
+    pub fn new(n: usize) -> Self {
+        TwoDSum {
+            n,
+            grid: vec![vec![0; n + 1]; n + 1],
+        }
+    }
+
+    pub fn execute(&mut self) {
+        for i in 0..=self.n {
+            for j in 0..self.n {
+                self.grid[i][j + 1] = self.grid[i][j + 1] + self.grid[i][j];
+            }
+        }
+        for i in 0..self.n {
+            for j in 0..=self.n {
+                self.grid[i + 1][j] = self.grid[i + 1][j] + self.grid[i][j];
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

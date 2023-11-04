@@ -64,3 +64,6 @@
 ## 基底ベクトル
 - i = i.min(i ^ e);としてそれを基底としてぶちこむ
   - [貪欲に基底ベクトルを見つける](https://github.com/okaponta/atcoder-rust/blob/master/abc236/src/bin/f.rs)
+
+## 二部グラフ判定
+- https://atcoder.jp/contests/abc327/submissions/47278551
