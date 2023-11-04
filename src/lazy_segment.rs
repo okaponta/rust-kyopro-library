@@ -1,3 +1,4 @@
+// let mut seg_tree = LazySegTree::new(vec![Node::new(); 200_001], merge, update, composition);
 // https://atcoder.jp/contests/abc327/submissions/47277315
 
 #[derive(Clone, Copy, Debug)]
