@@ -1,3 +1,6 @@
+// RollingHash + SegmentTree
+// ABC331 F
+
 pub struct RollingHash {
     b: Vec<u128>,
     hash: Vec<u128>,

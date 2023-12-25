@@ -18,3 +18,26 @@ fn shakutori_template(n: usize, k: usize, a: Vec<usize>) {
         left += 1;
     }
 }
+
+// a[i]-a[i+k]の最小値を出力する
+fn slide_min(a: Vec<usize>, n: usize, k: usize) -> Vec<usize> {
+    let mut q = std::collections::VecDeque::new();
+    let mut ans = vec![];
+    for i in 0..n {
+        while let Some(b) = q.pop_back() {
+            if a[b] < a[i] {
+                q.push_back(b);
+                break;
+            }
+        }
+        q.push_back(i);
+        if k <= i + 1 {
+            let f = q.pop_front().unwrap();
+            ans.push(a[f]);
+            if f != i + 1 - k {
+                q.push_front(f);
+            }
+        }
+    }
+    ans
+}

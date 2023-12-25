@@ -8,6 +8,7 @@ use superslice::Ext;
 // 必要な要素数は2^n-1
 // 区間上の値を更新する
 // 任意の区間上の最小値や合計値(与えるfuncによって全てのbit or値)などを取得する
+// let mut seg = SegmentTree::new(9, 0, |a, b| a + b);
 pub struct SegmentTree<T, F> {
     seg: Vec<T>,
     n: usize,
@@ -51,6 +52,11 @@ where
     // 半開区間なので注意
     pub fn query(&self, range: std::ops::Range<usize>) -> T {
         self.query_range(range, 0, 0..self.n)
+    }
+
+    // 半開区間なので注意
+    pub fn get(&self, k: usize) -> T {
+        self.query(k..k + 1)
     }
 
     fn query_range(
@@ -352,6 +358,104 @@ impl UnionFind {
     // 連結かどうかを返却する
     pub fn is_linked(&mut self) -> bool {
         self.size(0) == self.size.len()
+    }
+}
+
+// 重みつきUnionFind
+#[derive(Clone)]
+pub struct PotentializedUnionFind<T>
+where
+    T: Clone
+        + Default
+        + std::ops::Add<Output = T>
+        + std::ops::Sub<Output = T>
+        + std::ops::Neg<Output = T>
+        + Eq,
+{
+    par: Vec<i32>,
+    pot: Vec<T>,
+}
+
+impl<T> PotentializedUnionFind<T>
+where
+    T: Clone
+        + Default
+        + std::ops::Add<Output = T>
+        + std::ops::Sub<Output = T>
+        + std::ops::Neg<Output = T>
+        + Eq,
+{
+    pub fn new(n: usize) -> Self {
+        Self {
+            par: vec![-1; n],
+            pot: vec![T::default(); n],
+        }
+    }
+
+    pub fn len(&self) -> usize {
+        self.par.len()
+    }
+
+    /// 入力: P(x) = P(y) + w
+    /// 出力: 整合性があるか
+    pub fn merge(&mut self, x: usize, y: usize, mut w: T) -> bool {
+        w = w + self.potential(y) - self.potential(x);
+        let mut x = self.leader(x);
+        let mut y = self.leader(y);
+        if x == y {
+            return w == T::default();
+        }
+        if -self.par[x] > -self.par[y] {
+            std::mem::swap(&mut x, &mut y);
+            w = -w;
+        }
+        self.par[y] += self.par[x];
+        self.par[x] = y as i32;
+        self.pot[x] = w;
+        true
+    }
+
+    pub fn leader(&mut self, x: usize) -> usize {
+        if self.par[x] < 0 {
+            x
+        } else {
+            let r = self.leader(self.par[x] as usize);
+            self.pot[x] = self.pot[x].clone() + self.pot[self.par[x] as usize].clone();
+            self.par[x] = r as i32;
+            r
+        }
+    }
+
+    pub fn same(&mut self, x: usize, y: usize) -> bool {
+        self.leader(x) == self.leader(y)
+    }
+
+    pub fn size(&mut self, x: usize) -> usize {
+        let x = self.leader(x);
+        -self.par[x] as usize
+    }
+
+    /// P(x) - P(leader(x))
+    pub fn potential(&mut self, x: usize) -> T {
+        self.leader(x);
+        self.pot[x].clone()
+    }
+
+    /// P(x) - P(y)
+    pub fn diff(&mut self, x: usize, y: usize) -> Option<T> {
+        if self.same(x, y) {
+            Some(self.potential(x) - self.potential(y))
+        } else {
+            None
+        }
+    }
+
+    pub fn groups(&mut self) -> Vec<Vec<usize>> {
+        let mut res = vec![vec![]; self.len()];
+        for x in 0..self.len() {
+            res[self.leader(x)].push(x);
+        }
+        res.into_iter().filter(|g| g.len() > 0).collect()
     }
 }
 

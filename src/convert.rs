@@ -24,3 +24,12 @@ fn run_length_encode<T: Eq>(a: Vec<T>) -> Vec<(T, usize)> {
     });
     a
 }
+
+// 累積和
+fn ruiseki(a: &Vec<usize>) -> Vec<usize> {
+    let mut res = vec![0];
+    for i in 0..a.len() {
+        res.push(res[i] + a[i]);
+    }
+    res
+}

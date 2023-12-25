@@ -129,39 +129,35 @@ fn has_no_hole(b: &Vec<Vec<usize>>, c: usize, n: usize) -> bool {
     (0..n).all(|i| (0..n).all(|j| b[i][j] != c || visited[i][j]))
 }
 
-// targetの領域の数をかぞえる
-fn count_area(grid: &mut Vec<Vec<bool>>, w: usize, h: usize, target: bool) -> usize {
-    let dx = vec![-1, 0, 1, 0];
-    let dy = vec![0, -1, 0, 1];
-    let mut ans = 0;
-    for y in 0..w {
-        for x in 0..h {
-            if grid[y][x] != target {
-                // 対象外
+// targetのcharで分類する(1-indexed。対象意外は0)
+fn count_area(grid: &Vec<Vec<char>>, h: usize, w: usize, target: char) -> (usize, Vec<Vec<usize>>) {
+    let mut res = vec![vec![0; w]; h];
+    let mut q = VecDeque::new();
+    let mut count = 0;
+    for i in 0..h {
+        for j in 0..w {
+            if grid[i][j] != target || res[i][j] != 0 {
                 continue;
             }
-            ans += 1;
-            let mut q = VecDeque::new();
-            q.push_back((x, y));
-            while let Some((sx, sy)) = q.pop_front() {
-                for i in 0..4 {
-                    let tx = sx as i64 + dx[i];
-                    let ty = sy as i64 + dy[i];
-                    if tx < 0 || w as i64 <= tx || ty < 0 || w as i64 <= ty {
+            count += 1;
+            q.push_back((i, j, count));
+            res[i][j] = count;
+            while let Some((x, y, count)) = q.pop_front() {
+                for (dx, dy) in vec![(!0, 0), (0, 1), (0, !0), (1, 0)] {
+                    let xi = x.wrapping_add(dx);
+                    let yi = y.wrapping_add(dy);
+                    if h <= xi || w <= yi {
                         continue;
                     }
-                    let tx = tx as usize;
-                    let ty = ty as usize;
-                    if grid[ty][tx] != target {
-                        continue;
+                    if grid[xi][yi] == target && res[xi][yi] == 0 {
+                        q.push_back((xi, yi, count));
+                        res[xi][yi] = count;
                     }
-                    q.push_back((tx, ty));
-                    grid[ty][tx] = !target;
                 }
             }
         }
     }
-    ans
+    (count, res)
 }
 
 // 空白の行と列を周りからtrimする
@@ -237,29 +233,28 @@ fn upleft(v: &Vec<Vec<char>>) -> Vec<Vec<char>> {
 // 二次元累積和
 // TODO: きちんと書く
 pub struct TwoDSum {
-    n: usize,
-    grid: Vec<Vec<usize>>,
+    s: Vec<Vec<usize>>,
 }
 
 impl TwoDSum {
-    pub fn new(n: usize) -> Self {
-        TwoDSum {
-            n,
-            grid: vec![vec![0; n + 1]; n + 1],
+    pub fn new(h: usize, w: usize, a: &Vec<Vec<usize>>) -> Self {
+        let mut s = vec![vec![0; w + 1]; h + 1];
+        for i in 1..=h {
+            for j in 1..=w {
+                s[i][j] = a[i - 1][j - 1] + s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1];
+            }
         }
+        TwoDSum { s }
     }
 
-    pub fn execute(&mut self) {
-        for i in 0..=self.n {
-            for j in 0..self.n {
-                self.grid[i][j + 1] = self.grid[i][j + 1] + self.grid[i][j];
-            }
-        }
-        for i in 0..self.n {
-            for j in 0..=self.n {
-                self.grid[i + 1][j] = self.grid[i + 1][j] + self.grid[i][j];
-            }
-        }
+    // [h1,h2) * [w1,w2)の区間和を返却する
+    pub fn get(&mut self, h1: usize, w1: usize, h2: usize, w2: usize) -> usize {
+        self.s[h2][w2] + self.s[h1][w1] - self.s[h1][w2] - self.s[h2][w1]
+    }
+
+    // [0,h) * [0,w0)の区間和を返却する
+    pub fn get_o(&mut self, h: usize, w: usize) -> usize {
+        self.s[h][w] + self.s[0][0] - self.s[0][w] - self.s[h][0]
     }
 }
 

@@ -16,6 +16,8 @@ mod fft;
 #[allow(dead_code)]
 mod flow;
 #[allow(dead_code)]
+mod fraction;
+#[allow(dead_code)]
 mod geometry;
 #[allow(dead_code)]
 mod graph;

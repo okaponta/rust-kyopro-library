@@ -92,3 +92,10 @@ impl std::ops::MulAssign for ModInt {
         *self = *self * other;
     }
 }
+
+impl std::fmt::Debug for ModInt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}", self.val)?;
+        Ok(())
+    }
+}
