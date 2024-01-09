@@ -14,6 +14,7 @@ fn simple_bit_search(n: usize) {
     }
 }
 
+// supの中を全探索したい
 fn subset_search(sup: usize) {
     let mut sub = sup;
     loop {

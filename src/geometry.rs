@@ -133,3 +133,7 @@ fn is_cross_circumference(x1: i64, y1: i64, r1: i64, x2: i64, y2: i64, r2: i64) 
     }
     true
 }
+
+// (x,y)のベクトルの偏角
+// y.atan2(x) * 180.0 / PI
+// 典型009みてね

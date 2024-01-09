@@ -193,9 +193,11 @@ fn topo(n: usize, g: &Vec<Vec<usize>>) -> Vec<usize> {
 }
 
 // 計算量はE×V
+#[allow(dead_code)]
 pub struct BellmanFord {
     distance: Vec<i64>,
     has_neg_loop: bool,
+    negative: Vec<bool>, // 負閉路を用いて到達できる頂点
 }
 
 impl BellmanFord {
@@ -221,9 +223,34 @@ impl BellmanFord {
                 }
             }
         }
+
+        let mut negative = vec![false; n];
+        if !has_neg_loop {
+            return Self {
+                distance,
+                has_neg_loop,
+                negative,
+            };
+        }
+
+        for _ in 0..n {
+            for edge in &edges {
+                let from = edge.0;
+                let to = edge.1;
+                let cost = edge.2;
+                if distance[to] > distance[from] + cost {
+                    negative[to] = true;
+                }
+                if negative[from] {
+                    negative[to] = true;
+                }
+            }
+        }
+
         Self {
             distance,
             has_neg_loop,
+            negative,
         }
     }
 

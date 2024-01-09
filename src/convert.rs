@@ -33,3 +33,55 @@ fn ruiseki(a: &Vec<usize>) -> Vec<usize> {
     }
     res
 }
+
+// 逆順にソートされていること
+// kを挿入するとしたらどのインデックスに入るかが返却される(小さい側)。
+// [10,9,7,7,3]
+// 11 -> 0
+// 10 -> 0
+// 9 -> 1
+// 8 -> 2
+// 7 -> 2
+// 6 -> 4
+fn lower_bound_rev(a: &Vec<usize>, k: usize) -> usize {
+    if a[0] <= k {
+        return 0;
+    }
+    let mut lower = 0;
+    let mut upper = a.len();
+    while upper - lower > 1 {
+        let med = (lower + upper) / 2;
+        if a[med] <= k {
+            upper = med;
+        } else {
+            lower = med;
+        }
+    }
+    upper
+}
+
+// 逆順にソートされていること
+// kを挿入するとしたらどのインデックスに入るかが返却される(大きい側)。
+// [10,9,7,7,3]
+// 11 -> 0
+// 10 -> 1
+// 9 -> 2
+// 8 -> 2
+// 7 -> 4
+// 6 -> 4
+fn upper_bound_rev(a: &Vec<usize>, k: usize) -> usize {
+    if a[0] < k {
+        return 0;
+    }
+    let mut lower = 0;
+    let mut upper = a.len();
+    while upper - lower > 1 {
+        let med = (lower + upper) / 2;
+        if k <= a[med] {
+            lower = med;
+        } else {
+            upper = med;
+        }
+    }
+    upper
+}

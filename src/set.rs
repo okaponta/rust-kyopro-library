@@ -146,3 +146,72 @@ impl PrioritySumRev {
         }
     }
 }
+
+// 区間をsetで管理するやつ
+// 半開区間[l,r)を要素として持つ
+// 未検証！
+pub struct SegmentSet {
+    set: std::collections::BTreeSet<(usize, usize)>,
+}
+
+impl SegmentSet {
+    pub fn new() -> SegmentSet {
+        SegmentSet {
+            set: std::collections::BTreeSet::new(),
+        }
+    }
+
+    // iを含む区間[l,r)を取得する
+    pub fn get(&self, i: usize) -> (bool, (usize, usize)) {
+        if let Some(&(l, r)) = self.set.range(..(i + 1, 0)).last() {
+            if l <= i && i < r {
+                return (true, (l, r));
+            }
+        }
+        (false, (0, 0))
+    }
+
+    // 区間[l,r)を挿入する
+    pub fn insert(&mut self, mut l: usize, mut r: usize) {
+        if let Some(&(l1, r1)) = self.set.range(..(l, 0)).last() {
+            if l1 < l && l <= r1 {
+                l = l1;
+            }
+        }
+        if let Some(&(l2, r2)) = self.set.range(..(r, 0)).last() {
+            if l2 <= r && r < r2 {
+                r = r2;
+            }
+        }
+        let mut target = vec![];
+        self.set
+            .range((l, 0)..(r, r))
+            .for_each(|e| target.push(e.clone()));
+        for e in target {
+            self.set.remove(&e);
+        }
+    }
+
+    // 区間[l,r)を削除する
+    pub fn remove(&mut self, l: usize, r: usize) {
+        if let Some(&(l1, r1)) = self.set.range(..(l, 0)).last() {
+            if l1 < l && l <= r1 {
+                self.set.remove(&(l1, r1));
+                self.set.insert((l1, l));
+            }
+        }
+        if let Some(&(l2, r2)) = self.set.range(..(r, 0)).last() {
+            if l2 <= r && r < r2 {
+                self.set.remove(&(l2, r2));
+                self.set.insert((r, r2));
+            }
+        }
+        let mut target = vec![];
+        self.set
+            .range((l, 0)..(r, r))
+            .for_each(|e| target.push(e.clone()));
+        for e in target {
+            self.set.remove(&e);
+        }
+    }
+}
