@@ -6,6 +6,8 @@ mod bit;
 #[allow(dead_code)]
 mod bridges;
 #[allow(dead_code)]
+mod collections;
+#[allow(dead_code)]
 mod combination;
 #[allow(dead_code)]
 mod convert;
@@ -25,6 +27,8 @@ mod graph;
 mod grid;
 #[allow(dead_code)]
 mod hash;
+#[allow(dead_code)]
+mod imos;
 #[allow(dead_code)]
 mod input;
 #[allow(dead_code)]

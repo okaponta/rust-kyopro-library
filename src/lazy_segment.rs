@@ -3,14 +3,17 @@
 // https://atcoder.jp/contests/abc322/submissions/47283909
 
 #[derive(Clone, Copy, Debug)]
-struct Node {
+pub struct Node {
     i: i64,
 }
 
 impl Node {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self { i: 0 }
     }
+    // pub fn new(i: i64) -> Self {
+    //     Self { i }
+    // }
     fn max(&mut self, other: Node) -> Self {
         if self.i < other.i {
             self.i = other.i;
@@ -20,7 +23,7 @@ impl Node {
 }
 
 #[derive(Clone, Copy, Debug)]
-struct Param {
+pub struct Param {
     p: i64,
 }
 
@@ -32,8 +35,13 @@ impl Param {
         self.p += other.p;
         *self
     }
+    pub fn max(&mut self, other: Param) -> Self {
+        self.p = self.p.max(other.p);
+        *self
+    }
 }
 
+// クエリ取得時
 fn merge(mut p1: Node, p2: Node) -> Node {
     p1.max(p2)
 }
@@ -128,6 +136,7 @@ where
         self.get_range(index, index)
     }
 
+    // 閉区間！
     pub fn get_range(&mut self, left: usize, right: usize) -> T {
         self.get_range_sub(left, right, 0).unwrap()
     }

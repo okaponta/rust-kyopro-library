@@ -85,3 +85,10 @@ fn upper_bound_rev(a: &Vec<usize>, k: usize) -> usize {
     }
     upper
 }
+
+// 大きいStringをmodとる
+// https://atcoder.jp/contests/abc339/tasks/abc339_f
+fn mod_bigint(s: &str, m: u64) -> u64 {
+    s.chars()
+        .fold(0, |x, c| (x * 10 + c.to_digit(10).unwrap() as u64) % m)
+}

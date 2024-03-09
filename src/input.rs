@@ -30,7 +30,12 @@ fn input_string_as_int() {
     }
 }
 
-// インタラクティブな場合はこちらを使用、以下のように使用
+// インタラクティブな場合はこちらを使用
+// input_interactive! {
+//     n:usize,
+// }
+
+// 以下でもOK
 // let n: usize = read().parse().unwrap();
 fn read() -> String {
     let mut buf = String::new();

@@ -462,6 +462,8 @@ where
 // 領域セグ木
 // 各ノードがソート済の配列をもっている
 // この実装だと指定の範囲のとある数字以下の数を数えることができる
+// 累積和つき実装
+// https://atcoder.jp/contests/abc339/submissions/50100446
 struct RangeSegTree {
     data: Vec<Vec<i64>>,
 }

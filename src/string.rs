@@ -27,6 +27,18 @@ fn z(s: &Vec<&char>) -> Vec<usize> {
     res
 }
 
+// sの中にtはあるか？
+fn contains(s: &Vec<char>, t: &Vec<char>) -> bool {
+    let ts = t.iter().chain(s.iter()).collect::<Vec<_>>();
+    let z = z(&ts);
+    for i in t.len()..ts.len() {
+        if t.len() <= z[i] {
+            return true;
+        }
+    }
+    false
+}
+
 // 文字列置換
 // println!("{}", s.replace("na", "nya"));
 

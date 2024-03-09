@@ -61,6 +61,21 @@ fn move_grid_8(n: usize, x: usize, y: usize) {
     }
 }
 
+// let ni = tmp.0.wrapping_add(di);
+// let nj = tmp.1.wrapping_add(dj);
+// if h <= ni || w <= nj || s[ni][nj] == '#' {
+//     continue 'a;
+// }
+fn dir_to_int(c: char) -> (usize, usize) {
+    match c {
+        'U' => (!0, 0),
+        'D' => (1, 0),
+        'L' => (0, !0),
+        'R' => (0, 1),
+        _ => panic!(),
+    }
+}
+
 // 連結であるかをチェックする
 // c..チェック対象の数字
 // n..盤面の大きさ
@@ -144,14 +159,14 @@ fn count_area(grid: &Vec<Vec<char>>, h: usize, w: usize, target: char) -> (usize
             res[i][j] = count;
             while let Some((x, y, count)) = q.pop_front() {
                 for (dx, dy) in vec![(!0, 0), (0, 1), (0, !0), (1, 0)] {
-                    let xi = x.wrapping_add(dx);
-                    let yi = y.wrapping_add(dy);
-                    if h <= xi || w <= yi {
+                    let nx = x.wrapping_add(dx);
+                    let ny = y.wrapping_add(dy);
+                    if h <= nx || w <= ny {
                         continue;
                     }
-                    if grid[xi][yi] == target && res[xi][yi] == 0 {
-                        q.push_back((xi, yi, count));
-                        res[xi][yi] = count;
+                    if grid[nx][ny] == target && res[nx][ny] == 0 {
+                        q.push_back((nx, ny, count));
+                        res[nx][ny] = count;
                     }
                 }
             }
