@@ -38,3 +38,31 @@ fn rolling_hash(str: &Vec<char>, i: usize, j: usize) -> u128 {
     }
     hash
 }
+
+pub struct ModRollingHash {
+    modulo: u128,
+    b: Vec<u128>,
+    hash: Vec<u128>,
+}
+
+impl ModRollingHash {
+    // const MOD: u128 = 1_000_000_007;
+    // const BASE: u128 = 10007;
+    pub fn init(modulo: u128, base: u128, n: usize, str: &Vec<char>) -> Self {
+        let mut b = vec![1u128];
+        let mut hash = vec![0u128];
+        let mut t = 1;
+        for i in 0..n {
+            hash.push(((str[i] as u128 * t % modulo) + hash[i]) % modulo);
+            t = (t * base) % modulo;
+            b.push(t);
+        }
+        Self { modulo, b, hash }
+    }
+
+    // i..jまでの文字列のハッシュ値
+    // 位置が違うところで比較するときは、b[差分]だけかけてから比較すること
+    fn hash(&self, i: usize, j: usize) -> u128 {
+        (self.modulo + self.hash[j] - self.hash[i]) % self.modulo
+    }
+}

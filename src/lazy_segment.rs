@@ -1,6 +1,8 @@
 // let mut seg_tree = LazySegTree::new(vec![Node::new(); n], merge, update, composition);
 // https://atcoder.jp/contests/abc327/submissions/47277315
 // https://atcoder.jp/contests/abc322/submissions/47283909
+// 長方形の和集合の面積
+// https://atcoder.jp/contests/abc346/submissions/51620637
 
 #[derive(Clone, Copy, Debug)]
 pub struct Node {

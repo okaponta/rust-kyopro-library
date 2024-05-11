@@ -80,3 +80,36 @@ fn gauss_jordan(n: usize, mat: &Vec<Vec<i64>>, sol: &Vec<i64>) -> Vec<f64> {
     }
     res
 }
+
+// F2の行列掃き出し
+// 詳しくは典型57
+fn gaussian_elimination_xor(b: &mut Vec<Vec<bool>>) {
+    let n = b.len();
+    let m = b[0].len();
+
+    let mut d = 0;
+    for i in 0..m {
+        for j in d..n {
+            if b[j][i] {
+                b.swap(d, j);
+                break;
+            }
+        }
+
+        if !b[d][i] {
+            continue;
+        }
+        for j in 0..n {
+            if j == d || !b[j][i] {
+                continue;
+            }
+            for k in i..m {
+                b[j][k] ^= b[d][k];
+            }
+        }
+        d += 1;
+        if d >= n {
+            break;
+        }
+    }
+}

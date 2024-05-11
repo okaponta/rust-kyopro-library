@@ -137,3 +137,28 @@ fn is_cross_circumference(x1: i64, y1: i64, r1: i64, x2: i64, y2: i64, r2: i64) 
 // (x,y)のベクトルの偏角
 // y.atan2(x) * 180.0 / PI
 // 典型009みてね
+
+// 使い方は典型041をみてね
+// 点を時計回りにソートする
+fn sort_point_clockwise(n: usize, mut p: Vec<(i64, i64)>) -> Vec<(i64, i64)> {
+    p.sort();
+    // 右回り
+    let mut g1 = vec![p[0], p[1]];
+    // 左回り
+    let mut g2 = vec![p[0], p[1]];
+    for i in 2..n {
+        while g1.len() >= 2 && outer_product_p(g1[g1.len() - 2], g1[g1.len() - 1], p[i]) <= 0 {
+            g1.pop();
+        }
+        while g2.len() >= 2 && outer_product_p(g2[g2.len() - 2], g2[g2.len() - 1], p[i]) >= 0 {
+            g2.pop();
+        }
+        g1.push(p[i]);
+        g2.push(p[i]);
+    }
+
+    // 一周
+    let mut t = g1;
+    t.append(&mut g2.into_iter().skip(1).rev().skip(1).collect());
+    t
+}

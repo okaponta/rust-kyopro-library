@@ -43,36 +43,31 @@ fn rem(a: &mut nalgebra::Matrix2<usize>, modulo: usize) {
 }
 
 // ダブリングじゃないけど、ループがある問題
-// init 始点の数(多くの問題の場合0かと)
-// n    要素数
+// init 始点の数
 // k    k番目の数字が実質どれかを求める
-// map  次の要素がどれかを保持
-fn solve_loop(init: usize, n: usize, mut k: usize, map: Vec<usize>) -> usize {
-    let mut used = vec![false; n];
-    let mut path = vec![];
-    let mut next = init;
-    loop {
-        if used[next] {
-            break;
+// next 次の要素がどれかを計算
+fn index_with_loop(init: usize, k: usize) -> usize {
+    fn next(mut n: usize) -> usize {
+        let mut res = n;
+        for i in vec![10000, 1000, 100, 10, 1] {
+            res += n / i;
+            n %= i;
         }
-        path.push(next);
-        used[next] = true;
-        next = map[next];
+        res % 100000
     }
-    // ループのはじまり
-    let mut first = 0;
-    for i in 0..n {
-        if path[i] == next {
-            first = i;
-            break;
-        }
+
+    let mut v = vec![];
+    let mut set = std::collections::HashSet::new();
+    let mut tmp = init;
+    while !set.contains(&tmp) {
+        v.push(tmp);
+        set.insert(tmp);
+        tmp = next(tmp);
     }
-    let loop_size = path.len() - first;
-    if k <= first {
-        return map[path[k]];
-    } else {
-        k -= first;
-        k %= loop_size;
-        return map[path[k + first]];
+    if k < v.len() {
+        return v[k];
     }
+    let offset = v.iter().position(|&x| x == tmp).unwrap();
+    let l = v.len() - offset;
+    v[offset + (k - offset) % l]
 }

@@ -1,3 +1,7 @@
+use std::collections::HashMap;
+
+use proconio::input_interactive;
+
 fn binary_search_template(k: usize) {
     let mut lower = 0;
     let mut upper = 1 << 60;
@@ -55,4 +59,35 @@ fn lower_bound_f64(v: &Vec<f64>, t: f64) -> usize {
         }
     }
     lower
+}
+
+// 三分探索(インタラクティブのメモ化)
+fn three_part_search(n: usize) {
+    fn f(i: usize, map: &mut HashMap<usize, usize>) -> usize {
+        if map.contains_key(&i) {
+            return map[&i];
+        }
+        println!("? {}", i);
+        input_interactive!(a:usize);
+        map.insert(i, a);
+        a
+    }
+    let mut map = HashMap::new();
+    let mut lower = 1;
+    let mut upper = n;
+    while upper - lower > 2 {
+        let med1 = (lower * 2 + upper) / 3;
+        let med2 = (lower + upper * 2) / 3;
+        if f(med1, &mut map) < f(med2, &mut map) {
+            lower = med1;
+        } else {
+            upper = med2;
+        }
+    }
+    println!(
+        "! {}",
+        f(lower, &mut map)
+            .max(f(upper, &mut map))
+            .max(f((lower + upper) / 2, &mut map))
+    );
 }

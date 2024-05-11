@@ -54,6 +54,8 @@ mod square_division;
 #[allow(dead_code)]
 mod string;
 #[allow(dead_code)]
+mod top2;
+#[allow(dead_code)]
 mod tree;
 #[allow(dead_code)]
 mod vector;

@@ -1,13 +1,13 @@
 use std::collections::VecDeque;
 
 // initの地点からの距離を求める。
-// okじゃないとこには移動しない
+// ngのとこには移動しない
 fn bfs(
     h: usize,
     w: usize,
     init: (usize, usize),
     grid: &Vec<Vec<char>>,
-    ok: char,
+    ng: char,
 ) -> Vec<Vec<usize>> {
     let mut visited = vec![vec![false; w]; h];
     let mut res = vec![vec![1 << 60; w]; h];
@@ -24,14 +24,12 @@ fn bfs(
             if h <= nx || w <= ny {
                 continue;
             }
-            if visited[nx][ny] {
+            if visited[nx][ny] || grid[nx][ny] == ng {
                 continue;
             }
-            if grid[nx][ny] == ok && d < res[nx][ny] {
-                q.push_back((nx, ny));
-                visited[nx][ny] = true;
-                res[nx][ny] = d + 1;
-            }
+            q.push_back((nx, ny));
+            visited[nx][ny] = true;
+            res[nx][ny] = d + 1;
         }
     }
     res

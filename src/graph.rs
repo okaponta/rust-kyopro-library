@@ -694,6 +694,37 @@ fn tree_diameter_dfs_cost(
     ret
 }
 
+// オイラーツアー
+// let mut et: Vec<usize> = vec![n; 2 * n - 1]; // ノードを巡る順番(行きと帰りが記録される)
+// let mut depth: Vec<usize> = vec![0; 2 * n - 1]; // 深さ
+// let mut d: Vec<usize> = vec![0; n]; // 順番(1回だけ)
+// let mut idx: Vec<(usize, usize)> = vec![(0, 0); n]; // 行きと帰りのインデックス
+fn euler_dfs(
+    i: usize,
+    par: usize,
+    k: &mut usize,
+    g: &Vec<Vec<usize>>,
+    et: &mut Vec<usize>,
+    d: &mut Vec<usize>,
+    depth: &mut Vec<usize>,
+    idx: &mut Vec<(usize, usize)>,
+) {
+    et[*k] = i;
+    idx[i].0 = *k;
+    *k += 1;
+    for &ni in &g[i] {
+        if ni != par {
+            d[ni] = d[i] + 1;
+            depth[*k] = d[ni];
+            euler_dfs(ni, i, k, g, et, d, depth, idx);
+            et[*k] = i;
+            depth[*k] = d[i];
+            idx[i].1 = *k;
+            *k += 1;
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -1,3 +1,5 @@
+use superslice::Ext;
+
 // 最長共通接頭辞の長さ
 // 例えば、hohohehoiなら
 // 9,0,2,0,1,0,2,0,0
@@ -259,4 +261,36 @@ fn check(target: usize, len: usize, s: &Vec<(usize, usize)>) -> bool {
         }
     }
     true
+}
+
+// https://atcoder.jp/contests/abc346/submissions/51615303
+// a: Sを何回繰り返しているか
+// idx: Sの何番目のインデックスか
+// c: 対象のアルファベット
+// times: aのindex以降でcが何回登場したときのaとindexを返却する
+// cnt: 文字列Sの中にアルファベットが何番目に登場するか
+fn next(
+    mut a: usize,
+    mut idx: usize,
+    c: usize,
+    times: usize,
+    cnt: &Vec<Vec<usize>>,
+) -> (usize, usize) {
+    let tmp = cnt[c].upper_bound(&idx);
+    let mut rem = times;
+    if rem <= cnt[c].len() - tmp {
+        idx = cnt[c][tmp + rem - 1];
+    } else {
+        rem -= cnt[c].len() - tmp;
+        a += 1;
+        if rem % cnt[c].len() == 0 {
+            a += (rem / cnt[c].len()) - 1;
+            idx = cnt[c][cnt[c].len() - 1];
+        } else {
+            a += rem / cnt[c].len();
+            rem %= cnt[c].len();
+            idx = cnt[c][rem - 1];
+        }
+    }
+    (a, idx)
 }
