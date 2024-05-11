@@ -33,7 +33,7 @@ mod fft {
 
         for si in (0..bit).rev() {
             let s = 1_usize << si;
-            let zeta = Complex::from_polar(&1.0, &(2.0 * std::f64::consts::PI / (s << 1) as f64));
+            let zeta = Complex::from_polar(1.0, 2.0 * std::f64::consts::PI / (s << 1) as f64);
             for ii in 0..(n / (s << 1)) {
                 let i = ii * (s << 1);
                 let mut z_i = Complex::new(1.0, 0.0);
@@ -59,7 +59,7 @@ mod fft {
 
         for si in 0..bit {
             let s = 1_usize << si;
-            let zeta = Complex::from_polar(&1.0, &(-2.0 * std::f64::consts::PI / (s << 1) as f64));
+            let zeta = Complex::from_polar(1.0, -2.0 * std::f64::consts::PI / (s << 1) as f64);
             for ii in 0..(n / (s << 1)) {
                 let i = ii * (s << 1);
                 let mut z_i = Complex::new(1.0, 0.0);
