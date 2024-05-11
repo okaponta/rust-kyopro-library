@@ -111,6 +111,20 @@ where
     }
 }
 
+impl<T: Copy + std::fmt::Debug, F> std::fmt::Debug for SegmentTree<T, F>
+where
+    F: Fn(T, T) -> T,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let mut v = vec![];
+        for i in 0..self.n {
+            v.push(self.get(i));
+        }
+        writeln!(f, "{:?}", v)?;
+        Ok(())
+    }
+}
+
 // フェニック木。以下2つができる。1-indexedなので注意
 // 1. ai に v を加算する
 // 2. a1+a2+...+aiを求める
