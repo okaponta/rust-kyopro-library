@@ -77,6 +77,8 @@ mod fft {
     }
 }
 
+// ac-libraryで通してもよさそう笑
+// https://atcoder.jp/contests/typical90/submissions/51468936
 mod ntt {
     use super::super::modint::ModInt;
 
