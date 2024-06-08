@@ -46,6 +46,17 @@ fn sum_inf(c: f64) -> f64 {
     1.0 / (1.0 - c)
 }
 
+// nの桁数を返却する
+fn keta(n: usize) -> usize {
+    let mut res = 1;
+    let mut ten = 10;
+    while ten <= n {
+        res += 1;
+        ten *= 10;
+    }
+    res
+}
+
 // n!, 1/n, 1/n! をかえす
 fn fact_inv(n: usize, modulo: usize) -> (Vec<usize>, Vec<usize>, Vec<usize>) {
     let mut fact = vec![0; n + 1];

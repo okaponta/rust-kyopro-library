@@ -166,6 +166,7 @@ fn bfs(init: usize, n: usize, edges: &Vec<Vec<usize>>) -> Vec<i64> {
     d
 }
 
+// トポロジカルソートする。レスポンスにもともとの要素数がなかったらDAGじゃない
 fn topo(n: usize, g: &Vec<Vec<usize>>) -> Vec<usize> {
     let mut ind = vec![0; n];
     for i in 0..n {
