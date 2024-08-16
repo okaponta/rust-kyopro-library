@@ -4,7 +4,7 @@ use superslice::Ext;
 // segment tree
 // seg[0] -> seg[1]+seg[2]
 // seg[1] -> seg[3]+seg[4] seg[2] -> seg[5]+seg[6]
-// seg[3] -> seg[7]+seg[8] seg[6] -> seg[13]+seg[14]]
+// seg[3] -> seg[7]+seg[8] seg[6] -> seg[13]+seg[14]
 // 必要な要素数は2^n-1
 // 区間上の値を更新する
 // 任意の区間上の最小値や合計値(与えるfuncによって全てのbit or値)などを取得する

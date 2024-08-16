@@ -186,6 +186,23 @@ fn lcp(s: &Vec<char>, sa: &Vec<usize>) -> Vec<usize> {
     lcp
 }
 
+// suffix arrayのどこにいるか判定
+// https://atcoder.jp/contests/abc362/tasks/abc362_g
+fn sa_lower_bound(s: &Vec<char>, t: &Vec<char>, sa: &Vec<usize>) -> usize {
+    let mut lower = 0;
+    let mut upper = s.len() + 1;
+    let n = t.len();
+    while 1 < upper - lower {
+        let mid = (lower + upper) / 2;
+        if t[0..n] <= s[sa[mid]..] {
+            upper = mid;
+        } else {
+            lower = mid;
+        }
+    }
+    lower
+}
+
 // 未検証
 // suffix arrayを用いた判定
 // sはtに含まれているかを|t|log|s|で求める
@@ -293,4 +310,15 @@ fn next(
         }
     }
     (a, idx)
+}
+
+fn is_kaibun_int(n: usize) -> bool {
+    let s = n.to_string().chars().collect::<Vec<_>>();
+    let l = s.len();
+    (0..l).all(|i| s[i] == s[l - 1 - i])
+}
+
+fn is_kaibun(s: Vec<char>) -> bool {
+    let l = s.len();
+    (0..l).all(|i| s[i] == s[l - 1 - i])
 }

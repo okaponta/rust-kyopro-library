@@ -700,6 +700,7 @@ fn tree_diameter_dfs_cost(
 // let mut depth: Vec<usize> = vec![0; 2 * n - 1]; // 深さ
 // let mut d: Vec<usize> = vec![0; n]; // 順番(1回だけ)
 // let mut idx: Vec<(usize, usize)> = vec![(0, 0); n]; // 行きと帰りのインデックス
+// euler_dfs(0, 0, &mut 0, &g, &mut et, &mut d, &mut depth, &mut idx);
 fn euler_dfs(
     i: usize,
     par: usize,
@@ -725,6 +726,9 @@ fn euler_dfs(
         }
     }
 }
+
+// auxilary tree(実装途中)
+// https://atcoder.jp/contests/abc359/submissions/54872381
 
 #[cfg(test)]
 mod tests {
