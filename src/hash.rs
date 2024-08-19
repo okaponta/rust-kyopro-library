@@ -1,3 +1,14 @@
+fn simple_hash(n: usize) {
+    // 心配ならXORとってもよさそう
+    let base = 1000001137;
+    let mut h = vec![1u128];
+    let mut t = 1u128;
+    for _i in 0..=n {
+        t = t.wrapping_mul(base);
+        h.push(t);
+    }
+}
+
 // RollingHash + SegmentTree
 // ABC331 F
 
