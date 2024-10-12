@@ -1,3 +1,5 @@
+use proconio::input;
+
 fn input_for_graph(n: usize) {
     let uv = vec![(0, 1)];
     let mut edges = vec![vec![]; n];
@@ -27,6 +29,18 @@ fn input_string_as_int() {
     let s: Vec<char> = vec!['1', '2', '4'];
     for c in s {
         let ci = c.to_digit(10).unwrap() as i32;
+    }
+}
+
+// なんか意地悪なグラフの入力
+fn input_sankaku(n: usize) {
+    let mut a = vec![vec![0; n]; n];
+    for i in 0..n - 1 {
+        input! {ai:[usize;n-i-1]}
+        for j in 0..n - i - 1 {
+            a[i][j + i + 1] = ai[j];
+            a[j + i + 1][i] = ai[j];
+        }
     }
 }
 
