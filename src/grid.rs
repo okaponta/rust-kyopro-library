@@ -16,20 +16,20 @@ fn bfs(
     visited[init.0][init.1] = true;
     res[init.0][init.1] = 0usize;
     q.push_back((init.0, init.1));
-    while let Some((x, y)) = q.pop_front() {
-        let d = res[x][y];
-        for (dx, dy) in vec![(!0, 0), (0, 1), (0, !0), (1, 0)] {
-            let nx = x.wrapping_add(dx);
-            let ny = y.wrapping_add(dy);
-            if h <= nx || w <= ny {
+    while let Some((i, j)) = q.pop_front() {
+        let d = res[i][j];
+        for (di, dj) in vec![(!0, 0), (0, 1), (0, !0), (1, 0)] {
+            let ni = i.wrapping_add(di);
+            let nj = j.wrapping_add(dj);
+            if h <= ni || w <= nj {
                 continue;
             }
-            if visited[nx][ny] || grid[nx][ny] == ng {
+            if visited[ni][nj] || grid[ni][nj] == ng {
                 continue;
             }
-            q.push_back((nx, ny));
-            visited[nx][ny] = true;
-            res[nx][ny] = d + 1;
+            q.push_back((ni, nj));
+            visited[ni][nj] = true;
+            res[ni][nj] = d + 1;
         }
     }
     res
@@ -37,9 +37,9 @@ fn bfs(
 
 fn move_grid_4(n: usize, x: usize, y: usize) {
     for (dx, dy) in vec![(!0, 0), (0, 1), (0, !0), (1, 0)] {
-        let xi = x.wrapping_add(dx);
-        let yi = y.wrapping_add(dy);
-        if n <= xi || n <= yi {
+        let nx = x.wrapping_add(dx);
+        let ny = y.wrapping_add(dy);
+        if n <= nx || n <= ny {
             continue;
         }
         // ここは移動可能
@@ -50,9 +50,9 @@ fn move_grid_8(n: usize, x: usize, y: usize) {
     let dx = vec![!0, !0, 0, 1, 1, 1, 0, !0];
     let dy = vec![0, 1, 1, 1, 0, !0, !0, !0];
     for i in 0..8 {
-        let xi = x.wrapping_add(dx[i]);
-        let yi = y.wrapping_add(dy[i]);
-        if n <= xi || n <= yi {
+        let nx = x.wrapping_add(dx[i]);
+        let ny = y.wrapping_add(dy[i]);
+        if n <= nx || n <= ny {
             continue;
         }
         // ここは移動可能
