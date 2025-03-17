@@ -1,3 +1,34 @@
+// ac-libraryはこんな感じ
+//
+// struct M;
+// impl Monoid for M {
+//     type S = i64;
+//     fn binary_operation(a: &Self::S, b: &Self::S) -> Self::S {
+//         *a.max(b)
+//     }
+//     fn identity() -> Self::S {
+//         0
+//     }
+// }
+// impl MapMonoid for M {
+//     type F = i64;
+//     type M = M;
+//     fn composition(f: &Self::F, g: &Self::F) -> Self::F {
+//         f + g
+//     }
+//     fn identity_map() -> Self::F {
+//         0
+//     }
+//     fn mapping(f: &Self::F, x: &<Self::M as Monoid>::S) -> <Self::M as Monoid>::S {
+//         f + x
+//     }
+// }
+//
+// let mut seg = LazySegtree::<M>::new(n);
+// seg.apply_rage(l..r, x);
+// seg.prod(l..r);
+// https://atcoder.jp/contests/abc397/submissions/63854284
+
 // let mut seg_tree = LazySegTree::new(vec![Node::new(); n], merge, update, composition);
 // https://atcoder.jp/contests/abc327/submissions/47277315
 // https://atcoder.jp/contests/abc322/submissions/47283909

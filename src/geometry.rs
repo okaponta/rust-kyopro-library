@@ -24,6 +24,13 @@ fn outer_product_p(p1: (i64, i64), p2: (i64, i64), p3: (i64, i64)) -> i64 {
     a * d - b * c
 }
 
+// 線分p1,p2とp3,p4が交わるかどうかを判定する
+// 端点が他方の線分の延長線上にある場合もTrueを返すので注意
+fn intersect(p1: (i64, i64), p2: (i64, i64), p3: (i64, i64), p4: (i64, i64)) -> bool {
+    outer_product_p(p1, p2, p3) * outer_product_p(p1, p2, p4) < 0
+        && outer_product_p(p3, p4, p1) * outer_product_p(p3, p4, p2) < 0
+}
+
 // 距離の二乗を返却
 fn dist(x1: i64, y1: i64, x2: i64, y2: i64) -> i64 {
     (x1 - x2).pow(2) + (y1 - y2).pow(2)
