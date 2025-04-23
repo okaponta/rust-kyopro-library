@@ -684,6 +684,31 @@ fn tree_diameter_dfs(edges: &Vec<Vec<usize>>, cur: usize, parent: usize) -> (usi
     ret
 }
 
+// それぞれの辺から木の中での最長距離を求める
+fn tree_max_len(edges: &Vec<Vec<usize>>) -> Vec<usize> {
+    let n = edges.len();
+    let (l, r, _) = tree_diameter(edges);
+    let mut res = vec![0; n];
+    let mut d1 = vec![0; n];
+    let mut d2 = vec![0; n];
+    dfs2(l, l, &edges, &mut d1);
+    dfs2(r, r, &edges, &mut d2);
+    for i in 0..n {
+        res[i] = d1[i].max(d2[i]);
+    }
+    res
+}
+
+fn dfs2(prev: usize, cur: usize, edges: &Vec<Vec<usize>>, d: &mut Vec<usize>) {
+    for &next in &edges[cur] {
+        if next == prev {
+            continue;
+        }
+        d[next] = d[cur] + 1;
+        dfs2(cur, next, edges, d);
+    }
+}
+
 // コストつきの場合
 fn tree_diameter_cost(edges: &Vec<Vec<(usize, usize)>>) -> (usize, usize, usize) {
     let l = tree_diameter_dfs_cost(edges, 0, !0);

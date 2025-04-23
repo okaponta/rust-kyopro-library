@@ -35,11 +35,11 @@ fn bfs(
     res
 }
 
-fn move_grid_4(n: usize, x: usize, y: usize) {
-    for (dx, dy) in vec![(!0, 0), (0, 1), (0, !0), (1, 0)] {
-        let nx = x.wrapping_add(dx);
-        let ny = y.wrapping_add(dy);
-        if n <= nx || n <= ny {
+fn move_grid_4(h: usize, w: usize, i: usize, j: usize) {
+    for (di, dj) in vec![(!0, 0), (0, 1), (0, !0), (1, 0)] {
+        let ni = i.wrapping_add(di);
+        let nj = j.wrapping_add(dj);
+        if h <= ni || w <= nj {
             continue;
         }
         // ここは移動可能
